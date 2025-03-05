@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circles Career Fair</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #0077b6, #00a896);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .upload {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            color: black;
+            margin-top: 20px;
+        }
+        select, input, button {
+            margin-top: 10px;
+            padding: 8px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Circles Career Fair</h1>
+        <p>Join our dynamic team! Select a position and upload your CV below.</p>
+        <img src="logo.png" alt="Circles Logo" width="150">
+        <div class="upload">
+            <p><strong>Select Position:</strong></p>
+            <select id="position"></select>
+            <p><strong>Upload your CV:</strong></p>
+            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx">
+            <button onclick="submitCV()">Submit</button>
+        </div>
+    </div>
+    <script>
+        const positions = [
+            { name: "Software Engineer Intern", enabled: true },
+            { name: "Junior Data Analyst", enabled: true },
+            { name: "UI/UX Designer", enabled: false },
+        ];
+        
+        function loadPositions() {
+            const select = document.getElementById("position");
+            select.innerHTML = "";
+            positions.forEach(pos => {
+                if (pos.enabled) {
+                    const option = document.createElement("option");
+                    option.value = pos.name;
+                    option.textContent = pos.name;
+                    select.appendChild(option);
+                }
+            });
+        }
+        
+        function submitCV() {
+            const position = document.getElementById("position").value;
+            const fileInput = document.getElementById("cvUpload");
+            if (!fileInput.files.length) {
+                alert("Please select a file to upload.");
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const base64File = reader.result.split(",")[1];
+                
+                fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        filename: file.name,
+                        mimeType: file.type,
+                        file: base64File
+                    })
+                })
+                .then(response => response.text())
+                .then(result => alert(result))
+                .catch(error => alert("Error uploading file: " + error));
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        window.onload = loadPositions;
+    </script>
+</body>
+</html>
