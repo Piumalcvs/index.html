@@ -79,7 +79,7 @@
             reader.onloadend = function () {
                 const base64File = reader.result.split(",")[1];
                 
-                fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+                fetch("https://script.google.com/macros/s/AKfycbyvaJSyHNiDxkJjjPnG7Y3DmVZglI1NlyulJo9UO1tjYp7_t5fcp8jWnSNrnvAYbeJJGg/exec", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: new URLSearchParams({
