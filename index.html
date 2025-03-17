@@ -49,7 +49,9 @@
             <label><input type="checkbox" id="fulltimeCheckbox" onchange="updatePositions()"> Full Time Positions</label>
 
             <p><strong>Select Position:</strong></p>
-            <select id="position"></select>
+            <select id="position">
+                <option value="" disabled selected>Please select a category above</option>
+            </select>
 
             <p><strong>Upload your CV:</strong></p>
             <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
@@ -74,6 +76,11 @@
             const fulltimeChecked = document.getElementById("fulltimeCheckbox").checked;
             const select = document.getElementById("position");
             select.innerHTML = "";
+
+            if (!internshipChecked && !fulltimeChecked) {
+                select.innerHTML = '<option value="" disabled selected>Please select a category above</option>';
+                return;
+            }
 
             if (internshipChecked) {
                 positions.internships.forEach(pos => {
