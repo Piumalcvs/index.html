@@ -46,7 +46,7 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            width: 95%; /* Fixed width issue */
+            width: 95%;
             max-width: 100%;
             text-align: left;
             cursor: pointer;
@@ -57,7 +57,7 @@
         .dropdown-content {
             display: none;
             position: absolute;
-            width: 95%; /* Fixed width issue */
+            width: 95%;
             max-width: 100%;
             background: white;
             border: 1px solid #ccc;
@@ -101,7 +101,7 @@
         <div class="section-box">
             <h3>Select Position</h3>
             <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown()">Select positions ▼</div>
+                <div class="dropdown-btn" onclick="toggleDropdown()" id="dropdownBtn">Select a category from above ▼</div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
@@ -128,8 +128,9 @@
 
         function updatePositions() {
             const dropdown = document.getElementById("positionDropdown");
+            const dropdownBtn = document.getElementById("dropdownBtn");
             dropdown.innerHTML = "";
-            
+
             let selectedPositions = [];
             if (document.getElementById("internship").checked) {
                 selectedPositions = selectedPositions.concat(positions.internship);
@@ -139,8 +140,9 @@
             }
 
             if (selectedPositions.length === 0) {
-                dropdown.innerHTML = "<p style='padding:10px;'>Please select a category from above</p>";
+                dropdownBtn.innerText = "Select a category from above ▼";
             } else {
+                dropdownBtn.innerText = "Select positions ▼";
                 selectedPositions.forEach(pos => {
                     if (pos.enabled) {
                         const label = document.createElement("label");
