@@ -25,26 +25,65 @@
             border-radius: 5px;
             color: black;
             margin-top: 20px;
-            text-align: left;
+        }
+        .checkbox-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         select, input, button {
             margin-top: 10px;
             padding: 8px;
             width: 100%;
         }
-        .checkbox-group {
+        .dropdown-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .dropdown {
+            width: 100%;
+            text-align: left;
+            background: white;
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            width: 100%;
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            text-align: left;
+            z-index: 1000;
+        }
+        .dropdown-content label {
             display: flex;
-            flex-direction: column;
-            gap: 5px;
+            align-items: center;
+            padding: 8px;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .dropdown-content label:hover {
+            background: #f0f0f0;
         }
         .drag-drop {
-            border: 2px dashed #0077B6;
+            border: 2px dashed #ccc;
             padding: 20px;
             text-align: center;
             margin-top: 10px;
-            cursor: pointer;
-            background: white;
             color: black;
+            background: white;
             border-radius: 5px;
         }
     </style>
@@ -57,51 +96,71 @@
         <div class="box">
             <h3>Select Category</h3>
             <div class="checkbox-group">
-                <label><input type="checkbox" id="internship"> Internships</label>
-                <label><input type="checkbox" id="fulltime"> Full Time Positions</label>
+                <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
+                <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full Time Positions</label>
             </div>
         </div>
 
         <div class="box">
             <h3>Select Position</h3>
-            <select id="position"></select>
+            <div class="dropdown-container">
+                <div class="dropdown" onclick="toggleDropdown()">Select positions ▼</div>
+                <div class="dropdown-content" id="positionDropdown"></div>
+            </div>
         </div>
 
         <div class="box">
-            <h3>Upload your CV</h3>
-            <div class="drag-drop" id="dropZone">Drag & Drop your file here or click to upload</div>
-            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
+            <h3>Upload Your CV</h3>
+            <div class="drag-drop" id="dropZone">Drag & Drop your file here</div>
+            <p>OR</p>
+            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
             <button onclick="submitCV()">Submit</button>
         </div>
     </div>
 
     <script>
-        const positions = [
-            { name: "Software Engineering Intern", category: "internship", enabled: true },
-            { name: "Data Engineering Intern", category: "internship", enabled: true },
-            { name: "Software Engineer I", category: "fulltime", enabled: true },
-            { name: "Data Engineer I", category: "fulltime", enabled: true }
-        ];
+        const positions = {
+            internships: [
+                { name: "Software Engineering Intern", enabled: true },
+                { name: "Data Engineering Intern", enabled: true }
+            ],
+            fulltime: [
+                { name: "Software Engineer I", enabled: true },
+                { name: "Data Engineer I", enabled: true }
+            ]
+        };
 
-        function loadPositions() {
-            const select = document.getElementById("position");
-            select.innerHTML = '<option>Please select a category from above</option>';
-            positions.forEach(pos => {
-                if (pos.enabled && document.getElementById(pos.category).checked) {
-                    const option = document.createElement("option");
-                    option.value = pos.name;
-                    option.textContent = pos.name;
-                    select.appendChild(option);
+        function updatePositions() {
+            const dropdown = document.getElementById("positionDropdown");
+            dropdown.innerHTML = "";
+            
+            const showInterns = document.getElementById("internship").checked;
+            const showFullTime = document.getElementById("fulltime").checked;
+
+            if (!showInterns && !showFullTime) {
+                document.querySelector(".dropdown").textContent = "Please select a category from above ▼";
+                return;
+            }
+
+            [...(showInterns ? positions.internships : []), ...(showFullTime ? positions.fulltime : [])].forEach(pos => {
+                if (pos.enabled) {
+                    const label = document.createElement("label");
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.value = pos.name;
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(pos.name));
+                    dropdown.appendChild(label);
                 }
             });
+
+            document.querySelector(".dropdown").textContent = "Select positions ▼";
         }
 
-        document.getElementById("internship").addEventListener("change", loadPositions);
-        document.getElementById("fulltime").addEventListener("change", loadPositions);
-
-        document.getElementById("dropZone").addEventListener("click", () => {
-            document.getElementById("cvUpload").click();
-        });
+        function toggleDropdown() {
+            const dropdown = document.getElementById("positionDropdown");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
 
         function submitCV() {
             const fileInput = document.getElementById("cvUpload");
@@ -109,8 +168,46 @@
                 alert("Please select a file to upload.");
                 return;
             }
-            alert("File ready for upload!");
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const base64File = reader.result.split(",")[1];
+
+                fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        filename: file.name,
+                        mimeType: file.type,
+                        file: base64File
+                    })
+                })
+                .then(response => response.text())
+                .then(result => alert(result))
+                .catch(error => alert("Error uploading file: " + error));
+            };
+            reader.readAsDataURL(file);
         }
+
+        document.getElementById("dropZone").addEventListener("dragover", (event) => {
+            event.preventDefault();
+            event.currentTarget.style.border = "2px solid #0077B6";
+        });
+
+        document.getElementById("dropZone").addEventListener("dragleave", (event) => {
+            event.currentTarget.style.border = "2px dashed #ccc";
+        });
+
+        document.getElementById("dropZone").addEventListener("drop", (event) => {
+            event.preventDefault();
+            event.currentTarget.style.border = "2px dashed #ccc";
+
+            const files = event.dataTransfer.files;
+            if (files.length) {
+                document.getElementById("cvUpload").files = files;
+            }
+        });
     </script>
 </body>
 </html>
