@@ -191,28 +191,25 @@
                 startDateField.style.display = "none";
             }
 
-            if (internshipChecked) {
-                let internshipPositions = ["Software Engineering Intern", "Data Science Intern", "HR Intern"];
-                internshipPositions.forEach(pos => {
-                    let option = document.createElement("label");
-                    option.innerHTML = `<input type="radio" name="position" value="${pos}" onclick="selectPosition('${pos}')"> ${pos}`;
-                    positionDropdown.appendChild(option);
-                });
-            }
+            let positions = {
+                internship: ["Software Engineering Intern", "Data Engineering Intern"],
+                fulltime: ["Software Engineer I", "Data Engineer I"]
+            };
 
-            if (fulltimeChecked) {
-                let fullTimePositions = ["Software Engineer", "Data Scientist", "HR Executive"];
-                fullTimePositions.forEach(pos => {
-                    let option = document.createElement("label");
-                    option.innerHTML = `<input type="radio" name="position" value="${pos}" onclick="selectPosition('${pos}')"> ${pos}`;
-                    positionDropdown.appendChild(option);
-                });
-            }
+            let selectedPositions = [];
+            if (internshipChecked) selectedPositions = selectedPositions.concat(positions.internship);
+            if (fulltimeChecked) selectedPositions = selectedPositions.concat(positions.fulltime);
+
+            selectedPositions.forEach(pos => {
+                let option = document.createElement("label");
+                option.innerHTML = `<input type="checkbox" name="position" value="${pos}" onclick="updatePositionText()"> ${pos}`;
+                positionDropdown.appendChild(option);
+            });
         }
 
-        function selectPosition(position) {
-            document.getElementById("positionBtn").innerText = position + " ▼";
-            document.getElementById("positionDropdown").style.display = "none";
+        function updatePositionText() {
+            let selected = [...document.querySelectorAll('input[name="position"]:checked')].map(e => e.value);
+            document.getElementById("positionBtn").innerText = selected.length ? selected.join(", ") + " ▼" : "Select Position ▼";
         }
     </script>
 </body>
