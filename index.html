@@ -18,7 +18,6 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
-            text-align: center;
         }
         .upload {
             background: white;
@@ -35,20 +34,21 @@
         .checkbox-group {
             text-align: left;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 10px 0;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
         }
-        .checkbox-group label {
+        .checkbox-container {
             display: flex;
             align-items: center;
-            font-weight: normal;
-            gap: 5px;
+            gap: 8px;
+            margin: 5px 0;
         }
-        .checkbox-group input {
-            width: 16px;
-            height: 16px;
-            margin: 0;
+        .position-container {
+            margin-top: 20px;
+        }
+        .dropdown-container {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -58,18 +58,27 @@
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
         <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
 
-        <div class="upload">
-            <p><strong>Select Category:</strong></p>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="internships" onclick="filterPositions()"> Internships</label>
-                <label><input type="checkbox" id="fulltime" onclick="filterPositions()"> Full-Time Positions</label>
+        <div class="checkbox-group">
+            <div class="checkbox-container">
+                <input type="checkbox" id="internships" onchange="updatePositions()">
+                <label for="internships">Internships</label>
             </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="fulltime" onchange="updatePositions()">
+                <label for="fulltime">Full Time Positions</label>
+            </div>
+        </div>
 
+        <div class="position-container">
             <p><strong>Select Position:</strong></p>
-            <select id="position">
-                <option>Please select a category from above</option>
-            </select>
+            <div class="dropdown-container">
+                <select id="position">
+                    <option>Please select a category from above</option>
+                </select>
+            </div>
+        </div>
 
+        <div class="upload">
             <p><strong>Upload your CV:</strong></p>
             <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
             <button onclick="submitCV()">Submit</button>
@@ -88,41 +97,26 @@
             ]
         };
 
-        function filterPositions() {
-            const internshipChecked = document.getElementById("internships").checked;
-            const fulltimeChecked = document.getElementById("fulltime").checked;
+        function updatePositions() {
             const select = document.getElementById("position");
+            select.innerHTML = "<option>Please select a category from above</option>";
 
-            select.innerHTML = "";
-
-            if (!internshipChecked && !fulltimeChecked) {
-                const defaultOption = document.createElement("option");
-                defaultOption.textContent = "Please select a category from above";
-                select.appendChild(defaultOption);
-                return;
+            let selectedPositions = [];
+            if (document.getElementById("internships").checked) {
+                selectedPositions = selectedPositions.concat(positions.internships);
+            }
+            if (document.getElementById("fulltime").checked) {
+                selectedPositions = selectedPositions.concat(positions.fulltime);
             }
 
-            if (internshipChecked) {
-                positions.internships.forEach(pos => {
-                    if (pos.enabled) {
-                        const option = document.createElement("option");
-                        option.value = pos.name;
-                        option.textContent = pos.name;
-                        select.appendChild(option);
-                    }
-                });
-            }
-
-            if (fulltimeChecked) {
-                positions.fulltime.forEach(pos => {
-                    if (pos.enabled) {
-                        const option = document.createElement("option");
-                        option.value = pos.name;
-                        option.textContent = pos.name;
-                        select.appendChild(option);
-                    }
-                });
-            }
+            selectedPositions.forEach(pos => {
+                if (pos.enabled) {
+                    const option = document.createElement("option");
+                    option.value = pos.name;
+                    option.textContent = pos.name;
+                    select.appendChild(option);
+                }
+            });
         }
 
         function submitCV() {
