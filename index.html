@@ -27,16 +27,6 @@
             margin-top: 20px;
             text-align: left;
         }
-        .checkbox-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
         .dropdown {
             position: relative;
             width: 100%;
@@ -62,6 +52,8 @@
             border-radius: 5px;
             z-index: 1;
             text-align: left;
+            max-height: 150px;
+            overflow-y: auto;
             padding: 5px;
         }
         .dropdown-content label {
@@ -104,20 +96,19 @@
     <div class="container">
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
-        <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
         
         <div class="section-box">
             <h3>Select Category</h3>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
-                <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full Time Positions</label>
-            </div>
+            <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
+            <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full Time Positions</label>
         </div>
 
         <div class="section-box">
             <h3>Select Position</h3>
             <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown()">Select a category from above ▼</div>
+                <div class="dropdown-btn" onclick="toggleDropdown()">
+                    <span id="selectedPositions">Select a category from above</span> ▼
+                </div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
@@ -163,16 +154,25 @@
                 selectedPositions.forEach(pos => {
                     if (pos.enabled) {
                         const label = document.createElement("label");
-                        label.innerHTML = `<input type="checkbox" value="${pos.name}"> ${pos.name}`;
+                        label.innerHTML = `<input type="checkbox" value="${pos.name}" onchange="updateDropdownText()"> ${pos.name}`;
                         dropdown.appendChild(label);
                     }
                 });
             }
+
+            updateDropdownText();
         }
 
         function toggleDropdown() {
             const dropdown = document.getElementById("positionDropdown");
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+
+        function updateDropdownText() {
+            const selected = Array.from(document.querySelectorAll('#positionDropdown input:checked'))
+                .map(input => input.value);
+            const dropdownText = document.getElementById("selectedPositions");
+            dropdownText.innerText = selected.length > 0 ? selected.join(", ") : "Select a category from above";
         }
 
         document.getElementById("dropArea").addEventListener("click", function() {
@@ -186,6 +186,14 @@
         function submitCV() {
             alert("CV Submitted!");
         }
+
+        document.addEventListener("click", function(event) {
+            const dropdown = document.getElementById("positionDropdown");
+            const dropdownBtn = document.querySelector(".dropdown-btn");
+            if (!dropdown.contains(event.target) && !dropdownBtn.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
     </script>
 </body>
 </html>
