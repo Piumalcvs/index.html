@@ -98,6 +98,11 @@
             background: white;
             color: #0077B6;
         }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -107,7 +112,7 @@
         <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
         
         <div class="section-box">
-            <h3>Select Category</h3>
+            <h3>Select Category <span class="error" id="categoryError"></span></h3>
             <div class="checkbox-group">
                 <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
                 <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full Time Positions</label>
@@ -115,15 +120,15 @@
         </div>
 
         <div class="section-box">
-            <h3>Select Position</h3>
+            <h3>Select Position <span class="error" id="positionError"></span></h3>
             <div class="dropdown">
-                <div class="dropdown-btn" id="dropdownButton" onclick="toggleDropdown()">Select a category from above ▼</div>
+                <div class="dropdown-btn" onclick="toggleDropdown()" id="dropdownBtn">Select a category from above ▼</div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
 
         <div class="section-box">
-            <h3>Upload your CV</h3>
+            <h3>Upload your CV <span class="error" id="cvError"></span></h3>
             <div class="drag-drop-box" id="dropArea">Drag & Drop or Click to Upload</div>
             <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
         </div>
@@ -147,9 +152,9 @@
 
         function updatePositions() {
             const dropdown = document.getElementById("positionDropdown");
-            const dropdownButton = document.getElementById("dropdownButton");
             dropdown.innerHTML = "";
-            
+            const dropdownBtn = document.getElementById("dropdownBtn");
+
             let selectedPositions = [];
             if (document.getElementById("internship").checked) {
                 selectedPositions = selectedPositions.concat(positions.internship);
@@ -159,14 +164,14 @@
             }
 
             if (selectedPositions.length === 0) {
+                dropdownBtn.innerText = "Select a category from above ▼";
                 dropdown.innerHTML = "<p style='padding:10px;'>Please select a category from above</p>";
-                dropdownButton.innerHTML = "Select a category from above ▼";
             } else {
-                dropdownButton.innerHTML = "Select Position ▼";
+                dropdownBtn.innerText = "Select Position ▼";
                 selectedPositions.forEach(pos => {
                     if (pos.enabled) {
                         const label = document.createElement("label");
-                        label.innerHTML = `<input type="checkbox" value="${pos.name}"> ${pos.name}`;
+                        label.innerHTML = `<input type="checkbox" name="position" value="${pos.name}"> ${pos.name}`;
                         dropdown.appendChild(label);
                     }
                 });
@@ -187,7 +192,36 @@
         });
 
         function submitCV() {
-            alert("CV Submitted!");
+            let isValid = true;
+
+            // Validate Category
+            if (!document.getElementById("internship").checked && !document.getElementById("fulltime").checked) {
+                document.getElementById("categoryError").innerText = " (Required)";
+                isValid = false;
+            } else {
+                document.getElementById("categoryError").innerText = "";
+            }
+
+            // Validate Position
+            const checkedPositions = document.querySelectorAll("#positionDropdown input[type='checkbox']:checked");
+            if (checkedPositions.length === 0) {
+                document.getElementById("positionError").innerText = " (Required)";
+                isValid = false;
+            } else {
+                document.getElementById("positionError").innerText = "";
+            }
+
+            // Validate CV Upload
+            if (!document.getElementById("cvUpload").files.length) {
+                document.getElementById("cvError").innerText = " (Required)";
+                isValid = false;
+            } else {
+                document.getElementById("cvError").innerText = "";
+            }
+
+            if (isValid) {
+                alert("CV Submitted Successfully!");
+            }
         }
     </script>
 </body>
