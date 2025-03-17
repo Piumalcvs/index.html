@@ -19,12 +19,18 @@
             padding: 20px;
             border-radius: 10px;
         }
-        .box {
+        .section-box {
             background: white;
             padding: 15px;
             border-radius: 5px;
             color: black;
             margin-top: 20px;
+            text-align: left;
+        }
+        select, input, button {
+            margin-top: 10px;
+            padding: 8px;
+            width: 100%;
         }
         .checkbox-group {
             display: flex;
@@ -35,60 +41,51 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            white-space: nowrap;
         }
-        select, input, button {
-            margin-top: 10px;
-            padding: 8px;
-            width: 100%;
-        }
-        .dropdown-container {
+        .dropdown {
             position: relative;
             display: inline-block;
             width: 100%;
         }
-        .dropdown {
+        .dropdown-btn {
+            background: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             width: 100%;
             text-align: left;
-            background: white;
-            color: black;
-            padding: 10px;
-            border-radius: 5px;
             cursor: pointer;
-            border: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .dropdown-content {
             display: none;
             position: absolute;
-            background: white;
             width: 100%;
+            background: white;
             border: 1px solid #ccc;
-            max-height: 150px;
-            overflow-y: auto;
+            border-radius: 5px;
+            z-index: 1;
             text-align: left;
-            z-index: 1000;
         }
         .dropdown-content label {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            gap: 8px;
+            display: block;
+            padding: 5px;
             cursor: pointer;
         }
         .dropdown-content label input {
-            margin: 0;
+            margin-right: 5px;
         }
-        .dropdown-content label:hover {
-            background: #f0f0f0;
-        }
-        .drag-drop {
+        .drag-drop-box {
             border: 2px dashed #ccc;
             padding: 20px;
+            border-radius: 5px;
             text-align: center;
             margin-top: 10px;
-            color: black;
-            background: white;
-            border-radius: 5px;
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
         }
     </style>
 </head>
@@ -96,8 +93,9 @@
     <div class="container">
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
+        <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
         
-        <div class="box">
+        <div class="section-box">
             <h3>Select Category</h3>
             <div class="checkbox-group">
                 <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
@@ -105,26 +103,25 @@
             </div>
         </div>
 
-        <div class="box">
+        <div class="section-box">
             <h3>Select Position</h3>
-            <div class="dropdown-container">
-                <div class="dropdown" onclick="toggleDropdown()">Select positions ▼</div>
+            <div class="dropdown">
+                <div class="dropdown-btn" onclick="toggleDropdown()">Select positions ▼</div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
 
-        <div class="box">
-            <h3>Upload Your CV</h3>
-            <div class="drag-drop" id="dropZone">Drag & Drop your file here</div>
-            <p>OR</p>
-            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+        <div class="section-box">
+            <h3>Upload your CV</h3>
+            <div class="drag-drop-box" id="dropArea">Drag & Drop or Click to Upload</div>
+            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
             <button onclick="submitCV()">Submit</button>
         </div>
     </div>
 
     <script>
         const positions = {
-            internships: [
+            internship: [
                 { name: "Software Engineering Intern", enabled: true },
                 { name: "Data Engineering Intern", enabled: true }
             ],
@@ -138,27 +135,25 @@
             const dropdown = document.getElementById("positionDropdown");
             dropdown.innerHTML = "";
             
-            const showInterns = document.getElementById("internship").checked;
-            const showFullTime = document.getElementById("fulltime").checked;
-
-            if (!showInterns && !showFullTime) {
-                document.querySelector(".dropdown").textContent = "Please select a category from above ▼";
-                return;
+            let selectedPositions = [];
+            if (document.getElementById("internship").checked) {
+                selectedPositions = selectedPositions.concat(positions.internship);
+            }
+            if (document.getElementById("fulltime").checked) {
+                selectedPositions = selectedPositions.concat(positions.fulltime);
             }
 
-            [...(showInterns ? positions.internships : []), ...(showFullTime ? positions.fulltime : [])].forEach(pos => {
-                if (pos.enabled) {
-                    const label = document.createElement("label");
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.value = pos.name;
-                    label.appendChild(checkbox);
-                    label.appendChild(document.createTextNode(pos.name));
-                    dropdown.appendChild(label);
-                }
-            });
-
-            document.querySelector(".dropdown").textContent = "Select positions ▼";
+            if (selectedPositions.length === 0) {
+                dropdown.innerHTML = "<p style='padding:10px;'>Please select a category from above</p>";
+            } else {
+                selectedPositions.forEach(pos => {
+                    if (pos.enabled) {
+                        const label = document.createElement("label");
+                        label.innerHTML = `<input type="checkbox" value="${pos.name}"> ${pos.name}`;
+                        dropdown.appendChild(label);
+                    }
+                });
+            }
         }
 
         function toggleDropdown() {
@@ -166,52 +161,17 @@
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         }
 
+        document.getElementById("dropArea").addEventListener("click", function() {
+            document.getElementById("cvUpload").click();
+        });
+
+        document.getElementById("cvUpload").addEventListener("change", function() {
+            document.getElementById("dropArea").innerText = "File selected: " + this.files[0].name;
+        });
+
         function submitCV() {
-            const fileInput = document.getElementById("cvUpload");
-            if (!fileInput.files.length) {
-                alert("Please select a file to upload.");
-                return;
-            }
-
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onloadend = function () {
-                const base64File = reader.result.split(",")[1];
-
-                fetch("YOUR_GOOGLE_APPS_SCRIPT_URL", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({
-                        filename: file.name,
-                        mimeType: file.type,
-                        file: base64File
-                    })
-                })
-                .then(response => response.text())
-                .then(result => alert(result))
-                .catch(error => alert("Error uploading file: " + error));
-            };
-            reader.readAsDataURL(file);
+            alert("CV Submitted!");
         }
-
-        document.getElementById("dropZone").addEventListener("dragover", (event) => {
-            event.preventDefault();
-            event.currentTarget.style.border = "2px solid #0077B6";
-        });
-
-        document.getElementById("dropZone").addEventListener("dragleave", (event) => {
-            event.currentTarget.style.border = "2px dashed #ccc";
-        });
-
-        document.getElementById("dropZone").addEventListener("drop", (event) => {
-            event.preventDefault();
-            event.currentTarget.style.border = "2px dashed #ccc";
-
-            const files = event.dataTransfer.files;
-            if (files.length) {
-                document.getElementById("cvUpload").files = files;
-            }
-        });
     </script>
 </body>
 </html>
