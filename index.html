@@ -11,6 +11,7 @@
             color: white;
             text-align: center;
             padding: 20px;
+            margin: 0;
         }
         .container {
             max-width: 600px;
@@ -18,6 +19,7 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
+            box-sizing: border-box;
         }
         .section-box {
             background: white;
@@ -35,18 +37,19 @@
             border-radius: 5px;
             background: white;
             text-align: left;
-            cursor: pointer;
+            box-sizing: border-box;
         }
         .dropdown-content {
             display: none;
             position: absolute;
-            width: calc(100% - 20px);
+            width: 100%;
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
             z-index: 1;
             padding: 5px;
             text-align: left;
+            box-sizing: border-box;
         }
         .dropdown-content label {
             display: block;
@@ -55,6 +58,12 @@
         }
         .dropdown-content label:hover {
             background: #ddd;
+        }
+        .checkbox-group label {
+            display: block;
+            padding: 5px;
+            cursor: pointer;
+            text-align: left;
         }
         .submit-container {
             text-align: center;
@@ -73,6 +82,20 @@
         .submit-btn:hover {
             background: white;
             color: #0077B6;
+        }
+        /* Responsive design adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .input-field, .dropdown-btn {
+                padding: 8px;
+                font-size: 14px;
+            }
+            .submit-btn {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
         }
     </style>
 </head>
