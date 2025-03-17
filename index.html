@@ -31,6 +31,11 @@
             padding: 8px;
             width: 100%;
         }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -38,31 +43,59 @@
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
         <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
+        
         <div class="upload">
+            <label><input type="checkbox" id="internshipCheckbox" onchange="updatePositions()"> Internships</label>
+            <label><input type="checkbox" id="fulltimeCheckbox" onchange="updatePositions()"> Full Time Positions</label>
+
             <p><strong>Select Position:</strong></p>
             <select id="position"></select>
+
             <p><strong>Upload your CV:</strong></p>
             <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
             <button onclick="submitCV()">Submit</button>
         </div>
     </div>
-    <script>
-        const positions = [
-            { name: "Software Engineer I", enabled: true },
-            { name: "Data Engineer I", enabled: true }
-        ];
 
-        function loadPositions() {
+    <script>
+        const positions = {
+            internships: [
+                { name: "Software Engineering Intern", enabled: true },
+                { name: "Data Engineering Intern", enabled: true }
+            ],
+            fulltime: [
+                { name: "Software Engineer I", enabled: true },
+                { name: "Data Engineer I", enabled: true }
+            ]
+        };
+
+        function updatePositions() {
+            const internshipChecked = document.getElementById("internshipCheckbox").checked;
+            const fulltimeChecked = document.getElementById("fulltimeCheckbox").checked;
             const select = document.getElementById("position");
             select.innerHTML = "";
-            positions.forEach(pos => {
-                if (pos.enabled) {
-                    const option = document.createElement("option");
-                    option.value = pos.name;
-                    option.textContent = pos.name;
-                    select.appendChild(option);
-                }
-            });
+
+            if (internshipChecked) {
+                positions.internships.forEach(pos => {
+                    if (pos.enabled) {
+                        const option = document.createElement("option");
+                        option.value = pos.name;
+                        option.textContent = pos.name;
+                        select.appendChild(option);
+                    }
+                });
+            }
+
+            if (fulltimeChecked) {
+                positions.fulltime.forEach(pos => {
+                    if (pos.enabled) {
+                        const option = document.createElement("option");
+                        option.value = pos.name;
+                        option.textContent = pos.name;
+                        select.appendChild(option);
+                    }
+                });
+            }
         }
 
         function submitCV() {
@@ -94,7 +127,7 @@
             reader.readAsDataURL(file);
         }
 
-        window.onload = loadPositions;
+        window.onload = updatePositions;
     </script>
 </body>
 </html>
