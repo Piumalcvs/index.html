@@ -36,10 +36,15 @@
             margin-bottom: 15px;
         }
         .checkbox-container {
-            display: inline-flex;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .checkbox-container label {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            margin: 5px 10px;
+            gap: 5px;
+            font-weight: normal;
         }
         .position-container {
             margin-top: 20px;
@@ -58,10 +63,8 @@
         <div class="checkbox-group">
             <p><strong>Select Category:</strong></p>
             <div class="checkbox-container">
-                <input type="checkbox" id="internships" onchange="updatePositions()">
-                <label for="internships">Internships</label>
-                <input type="checkbox" id="fulltime" onchange="updatePositions()">
-                <label for="fulltime">Full Time Positions</label>
+                <label><input type="checkbox" id="internships" onchange="updatePositions()"> Internships</label>
+                <label><input type="checkbox" id="fulltime" onchange="updatePositions()"> Full Time Positions</label>
             </div>
         </div>
 
