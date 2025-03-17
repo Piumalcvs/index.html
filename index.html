@@ -34,12 +34,16 @@
         }
         .checkbox-group {
             text-align: left;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
             margin: 10px 0;
-            padding-left: 20px;
         }
         .checkbox-group label {
             font-weight: normal;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
     </style>
 </head>
@@ -58,7 +62,7 @@
 
             <p><strong>Select Position:</strong></p>
             <select id="position">
-                <option>Please select the category from above</option>
+                <option>Please select a category from above</option>
             </select>
 
             <p><strong>Upload your CV:</strong></p>
@@ -88,7 +92,7 @@
 
             if (!internshipChecked && !fulltimeChecked) {
                 const defaultOption = document.createElement("option");
-                defaultOption.textContent = "Please select the category from above";
+                defaultOption.textContent = "Please select a category from above";
                 select.appendChild(defaultOption);
                 return;
             }
