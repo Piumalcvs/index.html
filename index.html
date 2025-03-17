@@ -41,6 +41,7 @@
             position: relative;
             display: inline-block;
             width: 100%;
+            text-align: left;
         }
         .dropdown-toggle {
             width: 100%;
@@ -50,6 +51,12 @@
             color: black;
             border: 1px solid #ccc;
             text-align: left;
+            position: relative;
+        }
+        .dropdown-toggle::after {
+            content: " ▼";
+            position: absolute;
+            right: 10px;
         }
         .dropdown-menu {
             display: none;
@@ -60,11 +67,16 @@
             max-height: 150px;
             overflow-y: auto;
             z-index: 1;
+            text-align: left;
         }
         .dropdown-menu label {
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 5px;
             cursor: pointer;
+        }
+        .dropdown-menu input {
+            margin-right: 10px;
         }
         .dropdown-menu label:hover {
             background: #f0f0f0;
