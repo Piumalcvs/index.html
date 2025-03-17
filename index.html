@@ -31,25 +31,22 @@
             padding: 8px;
             width: 100%;
         }
-        .checkbox-container {
+        .checkbox-group {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
-        .checkbox-container label {
+        .checkbox-group label {
             display: flex;
             align-items: center;
             gap: 5px;
             font-weight: normal;
-            white-space: nowrap;
         }
-        .section-title {
+        .select-position-label {
+            display: block;
             margin-top: 15px;
-            font-weight: bold;
-        }
-        #position {
-            margin-top: 5px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -60,15 +57,15 @@
         <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
         
         <div class="upload">
-            <p class="section-title">Select Category:</p>
-            <div class="checkbox-container">
+            <p><strong>Select Category:</strong></p>
+            <div class="checkbox-group">
                 <label><input type="checkbox" id="internshipCheckbox"> Internships</label>
                 <label><input type="checkbox" id="fullTimeCheckbox"> Full Time Positions</label>
             </div>
-
-            <p class="section-title">Select Position:</p>
+            
+            <p class="select-position-label"><strong>Select Position:</strong></p>
             <select id="position">
-                <option>Please select a category from above</option>
+                <option value="">Please select a category from above</option>
             </select>
 
             <p><strong>Upload your CV:</strong></p>
@@ -79,38 +76,37 @@
 
     <script>
         const positions = {
-            internship: ["Software Engineering Intern", "Data Engineering Intern"],
-            fullTime: ["Software Engineer I", "Data Engineer I"]
+            internships: [
+                { name: "Software Engineering Intern", enabled: true },
+                { name: "Data Engineering Intern", enabled: true }
+            ],
+            fullTime: [
+                { name: "Software Engineer I", enabled: true },
+                { name: "Data Engineer I", enabled: true }
+            ]
         };
 
         function loadPositions() {
             const select = document.getElementById("position");
-            select.innerHTML = "<option>Please select a category from above</option>";
-
-            const internshipChecked = document.getElementById("internshipCheckbox").checked;
-            const fullTimeChecked = document.getElementById("fullTimeCheckbox").checked;
-
-            if (internshipChecked) {
-                positions.internship.forEach(pos => {
-                    const option = document.createElement("option");
-                    option.value = pos;
-                    option.textContent = pos;
-                    select.appendChild(option);
-                });
+            select.innerHTML = '<option value="">Please select a category from above</option>';
+            
+            let selectedPositions = [];
+            if (document.getElementById("internshipCheckbox").checked) {
+                selectedPositions = selectedPositions.concat(positions.internships);
+            }
+            if (document.getElementById("fullTimeCheckbox").checked) {
+                selectedPositions = selectedPositions.concat(positions.fullTime);
             }
 
-            if (fullTimeChecked) {
-                positions.fullTime.forEach(pos => {
+            selectedPositions.forEach(pos => {
+                if (pos.enabled) {
                     const option = document.createElement("option");
-                    option.value = pos;
-                    option.textContent = pos;
+                    option.value = pos.name;
+                    option.textContent = pos.name;
                     select.appendChild(option);
-                });
-            }
+                }
+            });
         }
-
-        document.getElementById("internshipCheckbox").addEventListener("change", loadPositions);
-        document.getElementById("fullTimeCheckbox").addEventListener("change", loadPositions);
 
         function submitCV() {
             const position = document.getElementById("position").value;
@@ -141,7 +137,8 @@
             reader.readAsDataURL(file);
         }
 
-        window.onload = loadPositions;
+        document.getElementById("internshipCheckbox").addEventListener("change", loadPositions);
+        document.getElementById("fullTimeCheckbox").addEventListener("change", loadPositions);
     </script>
 </body>
 </html>
