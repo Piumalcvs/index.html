@@ -11,7 +11,6 @@
             color: white;
             text-align: center;
             padding: 20px;
-            margin: 0;
         }
         .container {
             max-width: 600px;
@@ -19,7 +18,6 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
-            box-sizing: border-box;
         }
         .section-box {
             background: white;
@@ -37,19 +35,18 @@
             border-radius: 5px;
             background: white;
             text-align: left;
-            box-sizing: border-box;
+            cursor: pointer;
         }
         .dropdown-content {
             display: none;
             position: absolute;
-            width: 100%;
+            width: calc(100% - 20px);
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
             z-index: 1;
             padding: 5px;
             text-align: left;
-            box-sizing: border-box;
         }
         .dropdown-content label {
             display: block;
@@ -58,12 +55,6 @@
         }
         .dropdown-content label:hover {
             background: #ddd;
-        }
-        .checkbox-group label {
-            display: block;
-            padding: 5px;
-            cursor: pointer;
-            text-align: left;
         }
         .submit-container {
             text-align: center;
@@ -82,37 +73,6 @@
         .submit-btn:hover {
             background: white;
             color: #0077B6;
-        }
-        /* CV Upload area */
-        .cv-upload {
-            border: 2px dashed #0077B6;
-            padding: 20px;
-            margin-top: 20px;
-            cursor: pointer;
-            background: #f9f9f9;
-            color: #0077B6;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .cv-upload:hover {
-            background: #e0f7fa;
-        }
-        .cv-upload input[type="file"] {
-            display: none;
-        }
-        /* Responsive design adjustments */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            .input-field, .dropdown-btn {
-                padding: 8px;
-                font-size: 14px;
-            }
-            .submit-btn {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
         }
     </style>
 </head>
@@ -142,57 +102,59 @@
             <div class="dropdown">
                 <div class="dropdown-btn" onclick="toggleDropdown('graduateDropdown')" id="graduateBtn">Select ▼</div>
                 <div class="dropdown-content" id="graduateDropdown">
-                    <label><input type="radio" name="graduateStatus" value="Graduate" onclick="toggleFields()"> Graduate</label>
-                    <label><input type="radio" name="graduateStatus" value="Undergraduate" onclick="toggleFields()"> Undergraduate</label>
+                    <label><input type="radio" name="graduateStatus" value="Graduate" onclick="toggleFields()" required> Graduate</label>
+                    <label><input type="radio" name="graduateStatus" value="Undergraduate" onclick="toggleFields()" required> Undergraduate</label>
                 </div>
             </div>
         </div>
 
         <div class="section-box" id="yearField" style="display: none;">
             <h3>Which year are you in?</h3>
-            <input type="text" class="input-field" id="year">
+            <input type="text" class="input-field" id="year" required>
         </div>
 
         <div class="section-box" id="graduationField" style="display: none;">
             <h3>Expected Graduation Date / Exam Completion</h3>
-            <input type="date" class="input-field" id="graduationDate">
+            <input type="date" class="input-field" id="graduationDate" required>
         </div>
 
         <div class="section-box">
             <h3>Previous Experience</h3>
-            <input type="text" class="input-field" id="experience">
+            <input type="text" class="input-field" id="experience" required>
         </div>
 
         <div class="section-box">
             <h3>Select Category</h3>
             <div class="checkbox-group">
-                <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
-                <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full-Time Positions</label>
+                <label><input type="checkbox" id="internship" onclick="updatePositions()" required> Internships</label>
+                <label><input type="checkbox" id="fulltime" onclick="updatePositions()" required> Full-Time Positions</label>
             </div>
         </div>
 
         <div class="section-box" id="positionSection" style="display: none;">
             <h3>Select Position</h3>
             <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown('positionDropdown')" id="positionBtn">Select Position ▼</div>
+                <div class="dropdown-btn" onclick="toggleDropdown('positionDropdown')" id="positionBtn">Select a Category First ▼</div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
 
         <div class="section-box" id="startDateField" style="display: none;">
             <h3>Preferred Internship / Full-Time Position Start Date</h3>
-            <input type="date" class="input-field" id="startDate">
+            <input type="date" class="input-field" id="startDate" required>
         </div>
 
         <div class="section-box">
             <h3>Additional Remarks</h3>
-            <textarea class="input-field" id="remarks"></textarea>
+            <textarea class="input-field" id="remarks" required></textarea>
         </div>
 
-        <!-- CV Upload Section -->
-        <div class="cv-upload" id="cvUpload" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h3>Drag and Drop your CV here or Click to Browse</h3>
-            <input type="file" id="cvFile" name="cvFile" accept=".pdf, .doc, .docx, .jpg, .png">
+        <div class="section-box">
+            <h3>Upload CV</h3>
+            <div class="input-field" id="cvDropArea" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <p>Drag and Drop your CV here</p>
+                <input type="file" id="cvFile" required>
+            </div>
         </div>
 
         <div class="submit-container">
@@ -235,11 +197,12 @@
             } else {
                 positionSection.style.display = "none";
                 startDateField.style.display = "none";
+                document.getElementById("positionBtn").innerText = "Select a Category First ▼";
             }
 
             let positions = {
-                internship: ["Software Engineering Intern", "Data Engineering Intern"],
-                fulltime: ["Software Engineer I", "Data Engineer I"]
+                internship: ["Software Engineering Intern", "Data Science Intern", "HR Intern"],
+                fulltime: ["Software Engineer", "Data Scientist", "HR Executive"]
             };
 
             let selectedPositions = [];
@@ -258,25 +221,33 @@
             document.getElementById("positionBtn").innerText = selected.length ? selected.join(", ") + " ▼" : "Select Position ▼";
         }
 
-        // Drag and Drop functionality
         function allowDrop(event) {
             event.preventDefault();
         }
 
         function drop(event) {
             event.preventDefault();
-            const fileInput = document.getElementById('cvFile');
-            fileInput.files = event.dataTransfer.files;
-            document.getElementById('cvUpload').innerHTML = `<h3>File: ${fileInput.files[0].name}</h3>`;
+            let file = event.dataTransfer.files[0];
+            document.getElementById("cvFile").files = event.dataTransfer.files;
         }
 
         function submitCV() {
-            let cvFile = document.getElementById('cvFile').files[0];
-            if (cvFile) {
-                alert('CV uploaded successfully!');
-                // Handle file submission logic here (e.g., sending it to a server or Google Drive)
+            // Validate all fields are filled and a CV is uploaded
+            let requiredFields = document.querySelectorAll('[required]');
+            let valid = true;
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    field.style.borderColor = "red";
+                    valid = false;
+                } else {
+                    field.style.borderColor = "";
+                }
+            });
+
+            if (valid) {
+                alert("Form submitted successfully!");
             } else {
-                alert('Please upload your CV!');
+                alert("Please fill out all mandatory fields!");
             }
         }
     </script>
