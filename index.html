@@ -19,29 +19,20 @@
             padding: 20px;
             border-radius: 10px;
         }
-        .upload {
+        .upload, .category-box {
             background: white;
             padding: 10px;
             border-radius: 5px;
             color: black;
             margin-top: 20px;
         }
-        .category-box {
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
-            color: black;
-            margin-bottom: 15px;
-        }
-        select, input, button {
-            margin-top: 10px;
+        select {
+            width: calc(100% - 20px); /* Keeps dropdown within the container */
             padding: 8px;
-            width: 100%;
         }
         .dropdown-container {
             width: 100%;
-            max-width: 300px; /* Adjusted width */
-            margin: auto;
+            max-width: 100%; /* Ensures dropdown doesn't overflow */
         }
     </style>
 </head>
@@ -71,14 +62,8 @@
 
     <script>
         const positions = {
-            internships: [
-                { name: "Software Engineering Intern" },
-                { name: "Data Engineering Intern" }
-            ],
-            fulltime: [
-                { name: "Software Engineer I" },
-                { name: "Data Engineer I" }
-            ]
+            internships: ["Software Engineering Intern", "Data Engineering Intern"],
+            fulltime: ["Software Engineer I", "Data Engineer I"]
         };
 
         function updateDropdown() {
@@ -86,10 +71,10 @@
             dropdown.innerHTML = '<option>Please select a category from above</option>';
 
             if (document.getElementById("internships").checked) {
-                positions.internships.forEach(pos => addOption(dropdown, pos.name));
+                positions.internships.forEach(pos => addOption(dropdown, pos));
             }
             if (document.getElementById("fulltime").checked) {
-                positions.fulltime.forEach(pos => addOption(dropdown, pos.name));
+                positions.fulltime.forEach(pos => addOption(dropdown, pos));
             }
         }
 
@@ -104,7 +89,6 @@
         document.getElementById("fulltime").addEventListener("change", updateDropdown);
 
         function submitCV() {
-            const position = document.getElementById("positionDropdown").value;
             const fileInput = document.getElementById("cvUpload");
             if (!fileInput.files.length) {
                 alert("Please select a file to upload.");
@@ -114,15 +98,13 @@
             const file = fileInput.files[0];
             const reader = new FileReader();
             reader.onloadend = function () {
-                const base64File = reader.result.split(",")[1];
-
                 fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
                     body: new URLSearchParams({
                         filename: file.name,
                         mimeType: file.type,
-                        file: base64File
+                        file: reader.result.split(",")[1]
                     })
                 })
                 .then(response => response.text())
