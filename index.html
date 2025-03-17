@@ -26,7 +26,11 @@
             color: black;
             margin-top: 20px;
         }
-        .checkbox-container {
+        label {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .checkbox-group {
             display: flex;
             justify-content: center;
             gap: 20px;
@@ -34,51 +38,50 @@
         }
         .dropdown {
             position: relative;
-            display: inline-block;
             width: 100%;
-            text-align: left;
+            max-width: 400px;
+            margin: auto;
         }
-        .dropdown-toggle {
+        .dropdown button {
             width: 100%;
             padding: 8px;
-            cursor: pointer;
-            background: white;
-            color: black;
             border: 1px solid #ccc;
+            background: white;
             text-align: left;
+            cursor: pointer;
             position: relative;
         }
-        .dropdown-toggle::after {
-            content: " ▼";
+        .dropdown button::after {
+            content: "▼";
             position: absolute;
             right: 10px;
         }
-        .dropdown-menu {
+        .dropdown-content {
             display: none;
             position: absolute;
-            width: 100%;
             background: white;
+            width: 100%;
             border: 1px solid #ccc;
             max-height: 150px;
             overflow-y: auto;
-            z-index: 1;
-            text-align: left;
-            padding: 5px;
+            z-index: 10;
         }
-        .dropdown-menu label {
-            display: flex;
-            align-items: center;
+        .dropdown-content label {
+            display: block;
             padding: 5px;
-            gap: 10px;
             cursor: pointer;
-            white-space: nowrap;
+            text-align: left;
         }
-        .dropdown-menu input {
-            margin: 0;
-            transform: scale(1.2);
+        .dropdown-content input {
+            margin-right: 5px;
         }
-        .dropdown-menu label:hover {
-            background: #f0f0f0;
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+        select, input, button {
+            margin-top: 10px;
+            padding: 8px;
+            width: 100%;
         }
     </style>
 </head>
@@ -90,15 +93,20 @@
         
         <div class="upload">
             <p><strong>Select Category:</strong></p>
-            <div class="checkbox-container">
-                <label><input type="checkbox" id="internshipCheckbox" onchange="updatePositions()"> Internships</label>
-                <label><input type="checkbox" id="fullTimeCheckbox" onchange="updatePositions()"> Full Time Positions</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="internships" onchange="updatePositions()"> Internships</label>
+                <label><input type="checkbox" id="fulltime" onchange="updatePositions()"> Full Time Positions</label>
             </div>
 
             <p><strong>Select Position:</strong></p>
             <div class="dropdown">
-                <div class="dropdown-toggle" onclick="toggleDropdown()">Please select a category from above</div>
-                <div class="dropdown-menu" id="positionDropdown"></div>
+                <button type="button" onclick="toggleDropdown()">Please select a category from above</button>
+                <div class="dropdown-content">
+                    <label><input type="checkbox" value="Software Engineering Intern"> Software Engineering Intern</label>
+                    <label><input type="checkbox" value="Data Engineering Intern"> Data Engineering Intern</label>
+                    <label><input type="checkbox" value="Software Engineer I"> Software Engineer I</label>
+                    <label><input type="checkbox" value="Data Engineer I"> Data Engineer I</label>
+                </div>
             </div>
 
             <p><strong>Upload your CV:</strong></p>
@@ -108,74 +116,33 @@
     </div>
 
     <script>
-        const positions = {
-            internship: ["Software Engineering Intern", "Data Engineering Intern"],
-            fullTime: ["Software Engineer I", "Data Engineer I"]
-        };
+        function toggleDropdown() {
+            document.querySelector(".dropdown").classList.toggle("active");
+        }
 
         function updatePositions() {
-            const internshipChecked = document.getElementById("internshipCheckbox").checked;
-            const fullTimeChecked = document.getElementById("fullTimeCheckbox").checked;
-            const dropdownToggle = document.querySelector(".dropdown-toggle");
-            const dropdownMenu = document.getElementById("positionDropdown");
+            const internshipsChecked = document.getElementById("internships").checked;
+            const fulltimeChecked = document.getElementById("fulltime").checked;
+            const dropdownButton = document.querySelector(".dropdown button");
+            const checkboxes = document.querySelectorAll(".dropdown-content label");
 
-            dropdownMenu.innerHTML = "";
-            
-            if (!internshipChecked && !fullTimeChecked) {
-                dropdownToggle.textContent = "Please select a category from above";
-                return;
+            checkboxes.forEach(label => {
+                const text = label.textContent.trim();
+                const show = (internshipsChecked && (text.includes("Intern"))) || (fulltimeChecked && !text.includes("Intern"));
+                label.style.display = show ? "block" : "none";
+            });
+
+            if (!internshipsChecked && !fulltimeChecked) {
+                dropdownButton.textContent = "Please select a category from above";
+            } else {
+                dropdownButton.textContent = "Select Positions";
             }
-
-            const selectedPositions = [];
-            if (internshipChecked) selectedPositions.push(...positions.internship);
-            if (fullTimeChecked) selectedPositions.push(...positions.fullTime);
-
-            selectedPositions.forEach(pos => {
-                const label = document.createElement("label");
-
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.value = pos;
-                checkbox.onchange = updateDropdownText;
-
-                label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(" " + pos));
-                dropdownMenu.appendChild(label);
-            });
-
-            dropdownToggle.textContent = "Select Positions";
-        }
-
-        function toggleDropdown() {
-            const dropdownMenu = document.getElementById("positionDropdown");
-            dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
-        }
-
-        function updateDropdownText() {
-            const selectedOptions = [];
-            document.querySelectorAll("#positionDropdown input:checked").forEach(checkbox => {
-                selectedOptions.push(checkbox.value);
-            });
-
-            document.querySelector(".dropdown-toggle").textContent = selectedOptions.length
-                ? selectedOptions.join(", ")
-                : "Select Positions";
         }
 
         function submitCV() {
             const fileInput = document.getElementById("cvUpload");
             if (!fileInput.files.length) {
                 alert("Please select a file to upload.");
-                return;
-            }
-
-            const selectedPositions = [];
-            document.querySelectorAll("#positionDropdown input:checked").forEach(checkbox => {
-                selectedPositions.push(checkbox.value);
-            });
-
-            if (selectedPositions.length === 0) {
-                alert("Please select at least one position.");
                 return;
             }
 
@@ -190,8 +157,7 @@
                     body: new URLSearchParams({
                         filename: file.name,
                         mimeType: file.type,
-                        file: base64File,
-                        positions: selectedPositions.join(", ")
+                        file: base64File
                     })
                 })
                 .then(response => response.text())
@@ -201,11 +167,7 @@
             reader.readAsDataURL(file);
         }
 
-        window.onclick = function(event) {
-            if (!event.target.matches(".dropdown-toggle")) {
-                document.getElementById("positionDropdown").style.display = "none";
-            }
-        };
+        window.onload = updatePositions;
     </script>
 </body>
 </html>
