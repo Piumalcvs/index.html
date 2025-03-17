@@ -31,15 +31,16 @@
             padding: 8px;
             width: 100%;
         }
-        #drop-area {
-            border: 2px dashed white;
+        .drag-drop-box {
+            border: 2px dashed #0077B6;
             padding: 20px;
-            text-align: center;
             margin-top: 10px;
+            text-align: center;
             cursor: pointer;
+            color: #0077B6;
         }
-        #drop-area.highlight {
-            background: rgba(255, 255, 255, 0.2);
+        .drag-drop-box.dragover {
+            background-color: rgba(0, 119, 182, 0.2);
         }
     </style>
 </head>
@@ -47,27 +48,26 @@
     <div class="container">
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
-        <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
-
+        
         <div class="upload">
             <p><strong>Select Position:</strong></p>
             <select id="position"></select>
 
             <p><strong>Upload your CV:</strong></p>
-            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-            
-            <div id="drop-area">
-                <p>Drag & Drop your CV here</p>
-            </div>
+            <div class="drag-drop-box" id="dragDropBox">Drag & Drop files here or click to upload</div>
+            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
+            <p id="fileName" style="margin-top: 10px; color: #0077B6;"></p>
             
             <button onclick="submitCV()">Submit</button>
         </div>
     </div>
+
     <script>
         const positions = [
-            { name: "Software Engineer Intern", enabled: true },
-            { name: "Junior Data Analyst", enabled: true },
-            { name: "UI/UX Designer", enabled: false },
+            { name: "Software Engineering Intern", enabled: true },
+            { name: "Data Engineering Intern", enabled: true },
+            { name: "Software Engineer I", enabled: true },
+            { name: "Data Engineer I", enabled: true },
         ];
 
         function loadPositions() {
@@ -83,10 +83,39 @@
             });
         }
 
+        const dragDropBox = document.getElementById("dragDropBox");
+        const fileInput = document.getElementById("cvUpload");
+        const fileNameDisplay = document.getElementById("fileName");
+
+        dragDropBox.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", (event) => {
+            if (event.target.files.length) {
+                fileNameDisplay.textContent = event.target.files[0].name;
+            }
+        });
+
+        dragDropBox.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dragDropBox.classList.add("dragover");
+        });
+
+        dragDropBox.addEventListener("dragleave", () => {
+            dragDropBox.classList.remove("dragover");
+        });
+
+        dragDropBox.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dragDropBox.classList.remove("dragover");
+
+            if (event.dataTransfer.files.length) {
+                fileInput.files = event.dataTransfer.files;
+                fileNameDisplay.textContent = event.dataTransfer.files[0].name;
+            }
+        });
+
         function submitCV() {
             const position = document.getElementById("position").value;
-            const fileInput = document.getElementById("cvUpload");
-
             if (!fileInput.files.length) {
                 alert("Please select a file to upload.");
                 return;
@@ -114,28 +143,6 @@
         }
 
         window.onload = loadPositions;
-
-        // Drag & Drop
-        let dropArea = document.getElementById("drop-area");
-
-        dropArea.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            dropArea.classList.add("highlight");
-        });
-
-        dropArea.addEventListener("dragleave", () => {
-            dropArea.classList.remove("highlight");
-        });
-
-        dropArea.addEventListener("drop", (e) => {
-            e.preventDefault();
-            dropArea.classList.remove("highlight");
-
-            let files = e.dataTransfer.files;
-            if (files.length) {
-                document.getElementById("cvUpload").files = files;
-            }
-        });
     </script>
 </body>
 </html>
