@@ -83,6 +83,23 @@
             background: white;
             color: #0077B6;
         }
+        /* CV Upload area */
+        .cv-upload {
+            border: 2px dashed #0077B6;
+            padding: 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            background: #f9f9f9;
+            color: #0077B6;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .cv-upload:hover {
+            background: #e0f7fa;
+        }
+        .cv-upload input[type="file"] {
+            display: none;
+        }
         /* Responsive design adjustments */
         @media (max-width: 768px) {
             .container {
@@ -172,6 +189,12 @@
             <textarea class="input-field" id="remarks"></textarea>
         </div>
 
+        <!-- CV Upload Section -->
+        <div class="cv-upload" id="cvUpload" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h3>Drag and Drop your CV here or Click to Browse</h3>
+            <input type="file" id="cvFile" name="cvFile" accept=".pdf, .doc, .docx, .jpg, .png">
+        </div>
+
         <div class="submit-container">
             <button class="submit-btn" onclick="submitCV()">Submit</button>
         </div>
@@ -233,6 +256,28 @@
         function updatePositionText() {
             let selected = [...document.querySelectorAll('input[name="position"]:checked')].map(e => e.value);
             document.getElementById("positionBtn").innerText = selected.length ? selected.join(", ") + " ▼" : "Select Position ▼";
+        }
+
+        // Drag and Drop functionality
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('cvFile');
+            fileInput.files = event.dataTransfer.files;
+            document.getElementById('cvUpload').innerHTML = `<h3>File: ${fileInput.files[0].name}</h3>`;
+        }
+
+        function submitCV() {
+            let cvFile = document.getElementById('cvFile').files[0];
+            if (cvFile) {
+                alert('CV uploaded successfully!');
+                // Handle file submission logic here (e.g., sending it to a server or Google Drive)
+            } else {
+                alert('Please upload your CV!');
+            }
         }
     </script>
 </body>
