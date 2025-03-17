@@ -26,11 +26,6 @@
             color: black;
             margin-top: 20px;
         }
-        select, input, button {
-            margin-top: 10px;
-            padding: 8px;
-            width: 100%;
-        }
         .checkbox-box {
             text-align: left;
             padding: 15px;
@@ -42,13 +37,30 @@
             justify-content: center;
             gap: 20px;
         }
-        label {
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: normal;
             cursor: pointer;
         }
         .dropdown {
             position: relative;
             display: inline-block;
             width: 100%;
+            margin-top: 10px;
+        }
+        .dropdown button {
+            background: white;
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .dropdown-content {
             display: none;
@@ -59,22 +71,19 @@
             border: 1px solid #ccc;
             z-index: 1;
             text-align: left;
+            max-height: 150px;
+            overflow-y: auto;
         }
         .dropdown-content label {
             display: flex;
             align-items: center;
             padding: 8px;
+            gap: 5px;
+            font-weight: normal;
+            cursor: pointer;
         }
         .dropdown-content input {
             margin-right: 8px;
-        }
-        .dropdown button {
-            background: white;
-            width: 100%;
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ccc;
-            cursor: pointer;
         }
         .drop-area {
             border: 2px dashed #0077B6;
@@ -101,7 +110,7 @@
 
         <h3>Select Position</h3>
         <div class="dropdown">
-            <button onclick="toggleDropdown()">Select Positions ⌄</button>
+            <button onclick="toggleDropdown()">Select Positions <span>⌄</span></button>
             <div class="dropdown-content" id="positionDropdown"></div>
         </div>
 
@@ -128,7 +137,7 @@
             dropdown.innerHTML = "";
 
             if (!internshipChecked && !fulltimeChecked) {
-                dropdown.innerHTML = "<p>Please select a category from above</p>";
+                dropdown.innerHTML = "<p style='padding: 8px;'>Please select a category from above</p>";
                 return;
             }
 
