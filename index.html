@@ -27,35 +27,34 @@
             margin-top: 20px;
             text-align: left;
         }
-        .input-field, .dropdown {
+        .input-field, .dropdown-btn {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
-        }
-        .dropdown-btn {
             background: white;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
             text-align: left;
             cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .dropdown-content {
             display: none;
             position: absolute;
-            width: 100%;
+            width: calc(100% - 20px);
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
             z-index: 1;
-            text-align: left;
             padding: 5px;
+            text-align: left;
+        }
+        .dropdown-content label {
+            display: block;
+            padding: 5px;
+            cursor: pointer;
+        }
+        .dropdown-content label:hover {
+            background: #ddd;
         }
         .submit-container {
             text-align: center;
@@ -101,7 +100,7 @@
         <div class="section-box">
             <h3>Are you a Graduate or Undergraduate?</h3>
             <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown('graduateDropdown')">Select ▼</div>
+                <div class="dropdown-btn" onclick="toggleDropdown('graduateDropdown')" id="graduateBtn">Select ▼</div>
                 <div class="dropdown-content" id="graduateDropdown">
                     <label><input type="radio" name="graduateStatus" value="Graduate" onclick="toggleFields()"> Graduate</label>
                     <label><input type="radio" name="graduateStatus" value="Undergraduate" onclick="toggleFields()"> Undergraduate</label>
@@ -112,6 +111,11 @@
         <div class="section-box" id="yearField" style="display: none;">
             <h3>Which year are you in?</h3>
             <input type="text" class="input-field" id="year">
+        </div>
+
+        <div class="section-box" id="graduationField" style="display: none;">
+            <h3>Expected Graduation Date / Exam Completion</h3>
+            <input type="date" class="input-field" id="graduationDate">
         </div>
 
         <div class="section-box">
@@ -166,6 +170,7 @@
         function toggleFields() {
             let status = document.querySelector('input[name="graduateStatus"]:checked').value;
             document.getElementById("yearField").style.display = status === "Undergraduate" ? "block" : "none";
+            document.getElementById("graduationField").style.display = status === "Undergraduate" ? "block" : "none";
         }
 
         function updatePositions() {
@@ -173,14 +178,17 @@
             let fulltimeChecked = document.getElementById("fulltime").checked;
             let positionDropdown = document.getElementById("positionDropdown");
             let positionSection = document.getElementById("positionSection");
+            let startDateField = document.getElementById("startDateField");
 
             positionDropdown.innerHTML = "";
 
             if (internshipChecked || fulltimeChecked) {
                 positionSection.style.display = "block";
+                startDateField.style.display = "block";
                 document.getElementById("positionBtn").innerText = "Select Position ▼";
             } else {
                 positionSection.style.display = "none";
+                startDateField.style.display = "none";
             }
 
             if (internshipChecked) {
