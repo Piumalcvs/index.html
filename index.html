@@ -27,19 +27,12 @@
             margin-top: 20px;
             text-align: left;
         }
-        .checkbox-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .dropdown {
-            position: relative;
+        .input-field, .dropdown {
             width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         .dropdown-btn {
             background: white;
@@ -62,12 +55,6 @@
             border-radius: 5px;
             z-index: 1;
             text-align: left;
-            padding: 5px;
-        }
-        .dropdown-content label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
             padding: 5px;
         }
         .drag-drop-box {
@@ -98,37 +85,87 @@
             background: white;
             color: #0077B6;
         }
-        .error {
-            color: red;
-            font-size: 14px;
-            margin-top: 5px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Welcome to Circles</h1>
-        <p>Join our dynamic team! Select a position and upload your CV below.</p>
+        <p>Join our dynamic team! Fill in the details and upload your CV below.</p>
         <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
-        
+
+        <!-- Mandatory Fields -->
         <div class="section-box">
-            <h3>Select Category <span class="error" id="categoryError"></span></h3>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
-                <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full Time Positions</label>
-            </div>
+            <h3>Full Name</h3>
+            <input type="text" class="input-field" id="name" required>
         </div>
 
         <div class="section-box">
-            <h3>Select Position <span class="error" id="positionError"></span></h3>
+            <h3>University</h3>
+            <input type="text" class="input-field" id="university" required>
+        </div>
+
+        <div class="section-box">
+            <h3>Degree Program</h3>
+            <input type="text" class="input-field" id="degree" required>
+        </div>
+
+        <div class="section-box">
+            <h3>Are you a Graduate or Undergraduate?</h3>
             <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown()" id="dropdownBtn">Select a category from above ▼</div>
+                <div class="dropdown-btn" onclick="toggleGraduateDropdown()">Select ▼</div>
+                <div class="dropdown-content" id="graduateDropdown">
+                    <label><input type="radio" name="graduateStatus" value="Graduate" onclick="toggleYearField()"> Graduate</label>
+                    <label><input type="radio" name="graduateStatus" value="Undergraduate" onclick="toggleYearField()"> Undergraduate</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-box" id="yearField" style="display: none;">
+            <h3>Which year are you in?</h3>
+            <input type="text" class="input-field" id="year" required>
+        </div>
+
+        <div class="section-box">
+            <h3>Previous Experience</h3>
+            <input type="text" class="input-field" id="experience">
+        </div>
+
+        <!-- Job Category Selection -->
+        <div class="section-box">
+            <h3>Select Category</h3>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
+                <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full-Time Positions</label>
+            </div>
+        </div>
+
+        <div class="section-box" id="gradDateField" style="display: none;">
+            <h3>Expected Graduation Date / Exam Completion</h3>
+            <input type="date" class="input-field" id="gradDate">
+        </div>
+
+        <div class="section-box" id="internStartField" style="display: none;">
+            <h3>Preferred Internship Start Date</h3>
+            <input type="date" class="input-field" id="internStartDate">
+        </div>
+
+        <!-- Position Selection -->
+        <div class="section-box">
+            <h3>Select Position</h3>
+            <div class="dropdown">
+                <div class="dropdown-btn" onclick="toggleDropdown()">Select Position ▼</div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
 
         <div class="section-box">
-            <h3>Upload your CV <span class="error" id="cvError"></span></h3>
+            <h3>Additional Remarks</h3>
+            <textarea class="input-field" id="remarks"></textarea>
+        </div>
+
+        <!-- CV Upload -->
+        <div class="section-box">
+            <h3>Upload your CV</h3>
             <div class="drag-drop-box" id="dropArea">Drag & Drop or Click to Upload</div>
             <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
         </div>
@@ -139,89 +176,18 @@
     </div>
 
     <script>
-        const positions = {
-            internship: [
-                { name: "Software Engineering Intern", enabled: true },
-                { name: "Data Engineering Intern", enabled: true }
-            ],
-            fulltime: [
-                { name: "Software Engineer I", enabled: true },
-                { name: "Data Engineer I", enabled: true }
-            ]
-        };
+        function toggleGraduateDropdown() {
+            document.getElementById("graduateDropdown").style.display = "block";
+        }
+
+        function toggleYearField() {
+            let status = document.querySelector('input[name="graduateStatus"]:checked').value;
+            document.getElementById("yearField").style.display = status === "Undergraduate" ? "block" : "none";
+        }
 
         function updatePositions() {
-            const dropdown = document.getElementById("positionDropdown");
-            dropdown.innerHTML = "";
-            const dropdownBtn = document.getElementById("dropdownBtn");
-
-            let selectedPositions = [];
-            if (document.getElementById("internship").checked) {
-                selectedPositions = selectedPositions.concat(positions.internship);
-            }
-            if (document.getElementById("fulltime").checked) {
-                selectedPositions = selectedPositions.concat(positions.fulltime);
-            }
-
-            if (selectedPositions.length === 0) {
-                dropdownBtn.innerText = "Select a category from above ▼";
-                dropdown.innerHTML = "<p style='padding:10px;'>Please select a category from above</p>";
-            } else {
-                dropdownBtn.innerText = "Select Position ▼";
-                selectedPositions.forEach(pos => {
-                    if (pos.enabled) {
-                        const label = document.createElement("label");
-                        label.innerHTML = `<input type="checkbox" name="position" value="${pos.name}"> ${pos.name}`;
-                        dropdown.appendChild(label);
-                    }
-                });
-            }
-        }
-
-        function toggleDropdown() {
-            const dropdown = document.getElementById("positionDropdown");
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-        }
-
-        document.getElementById("dropArea").addEventListener("click", function() {
-            document.getElementById("cvUpload").click();
-        });
-
-        document.getElementById("cvUpload").addEventListener("change", function() {
-            document.getElementById("dropArea").innerText = "File selected: " + this.files[0].name;
-        });
-
-        function submitCV() {
-            let isValid = true;
-
-            // Validate Category
-            if (!document.getElementById("internship").checked && !document.getElementById("fulltime").checked) {
-                document.getElementById("categoryError").innerText = " (Required)";
-                isValid = false;
-            } else {
-                document.getElementById("categoryError").innerText = "";
-            }
-
-            // Validate Position
-            const checkedPositions = document.querySelectorAll("#positionDropdown input[type='checkbox']:checked");
-            if (checkedPositions.length === 0) {
-                document.getElementById("positionError").innerText = " (Required)";
-                isValid = false;
-            } else {
-                document.getElementById("positionError").innerText = "";
-            }
-
-            // Validate CV Upload
-            if (!document.getElementById("cvUpload").files.length) {
-                document.getElementById("cvError").innerText = " (Required)";
-                isValid = false;
-            } else {
-                document.getElementById("cvError").innerText = "";
-            }
-
-            if (isValid) {
-                alert("CV Submitted Successfully!");
-            }
+            document.getElementById("gradDateField").style.display = document.getElementById("fulltime").checked ? "block" : "none";
+            document.getElementById("internStartField").style.display = document.getElementById("internship").checked ? "block" : "none";
         }
     </script>
 </body>
