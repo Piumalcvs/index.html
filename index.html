@@ -59,7 +59,7 @@
             position: absolute;
             top: 100%;
             left: 0;
-            width: calc(100% - 2px);
+            width: 100%;
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -69,7 +69,15 @@
             max-height: 150px; /* Prevents dropdown overflow */
             overflow-y: auto; /* Enables scroll */
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            white-space: nowrap;
+            white-space: normal; /* Fix for wrapping */
+        }
+        .dropdown-content label {
+            display: block;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .dropdown-content label:hover {
+            background: #f0f0f0;
         }
         .drag-drop-box {
             border: 2px dashed #ccc;
@@ -160,7 +168,7 @@
                 selectedPositions.forEach(pos => {
                     if (pos.enabled) {
                         const label = document.createElement("label");
-                        label.innerHTML = `<input type="checkbox" value="${pos.name}"> ${pos.name}`;
+                        label.innerHTML = `<input type="radio" name="position" value="${pos.name}"> ${pos.name}`;
                         dropdown.appendChild(label);
                     }
                 });
