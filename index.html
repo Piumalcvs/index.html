@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #0077b6, #00a896);
+            background: linear-gradient(to right, #0077B6, #00A896);
             color: white;
             text-align: center;
             padding: 20px;
@@ -37,7 +37,7 @@
     <div class="container">
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
-        <img src="https://raw.githubusercontent.com/Piumalcvs/index.html.github.io/main/logo.png" alt="Circles Logo" width="150">
+        <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
         <div class="upload">
             <p><strong>Select Position:</strong></p>
             <select id="position"></select>
@@ -48,11 +48,10 @@
     </div>
     <script>
         const positions = [
-            { name: "Software Engineer Intern", enabled: true },
-            { name: "Junior Data Analyst", enabled: true },
-            { name: "UI/UX Designer", enabled: false },
+            { name: "Software Engineer I", enabled: true },
+            { name: "Data Engineer I", enabled: true }
         ];
-        
+
         function loadPositions() {
             const select = document.getElementById("position");
             select.innerHTML = "";
@@ -65,7 +64,7 @@
                 }
             });
         }
-        
+
         function submitCV() {
             const position = document.getElementById("position").value;
             const fileInput = document.getElementById("cvUpload");
@@ -73,12 +72,12 @@
                 alert("Please select a file to upload.");
                 return;
             }
-            
+
             const file = fileInput.files[0];
             const reader = new FileReader();
             reader.onloadend = function () {
                 const base64File = reader.result.split(",")[1];
-                
+
                 fetch("https://script.google.com/macros/s/AKfycbyvaJSyHNiDxkJjjPnG7Y3DmVZglI1NlyulJo9UO1tjYp7_t5fcp8jWnSNrnvAYbeJJGg/exec", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -94,7 +93,7 @@
             };
             reader.readAsDataURL(file);
         }
-        
+
         window.onload = loadPositions;
     </script>
 </body>
