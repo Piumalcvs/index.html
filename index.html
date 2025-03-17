@@ -59,7 +59,7 @@
             position: absolute;
             top: 100%;
             left: 0;
-            width: 100%;
+            width: calc(100% - 2px);
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -69,6 +69,7 @@
             max-height: 150px; /* Prevents dropdown overflow */
             overflow-y: auto; /* Enables scroll */
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
         }
         .drag-drop-box {
             border: 2px dashed #ccc;
