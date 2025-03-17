@@ -19,66 +19,29 @@
             padding: 20px;
             border-radius: 10px;
         }
-        .section-box {
+        .upload {
             background: white;
-            padding: 15px;
+            padding: 10px;
             border-radius: 5px;
             color: black;
             margin-top: 20px;
-            text-align: left;
         }
-        .checkbox-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .dropdown {
-            position: relative;
-            width: 100%;
-        }
-        .dropdown-btn {
+        .category-box {
             background: white;
             padding: 10px;
-            border: 1px solid #ccc;
             border-radius: 5px;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            color: black;
+            margin-bottom: 15px;
         }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            width: 100%;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            z-index: 1;
-            text-align: left;
-            padding: 5px;
-        }
-        .dropdown-content label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px;
-        }
-        .drag-drop-box {
-            border: 2px dashed #ccc;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
+        select, input, button {
             margin-top: 10px;
-            color: #333;
-            background: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
+            padding: 8px;
+            width: 100%;
+        }
+        .dropdown-container {
+            width: 100%;
+            max-width: 300px; /* Adjusted width */
+            margin: auto;
         }
     </style>
 </head>
@@ -87,83 +50,86 @@
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
         <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
-        
-        <div class="section-box">
-            <h3>Select Category</h3>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
-                <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full Time Positions</label>
-            </div>
+
+        <div class="category-box">
+            <p><strong>Select Category:</strong></p>
+            <label><input type="checkbox" id="internships"> Internships</label>
+            <label><input type="checkbox" id="fulltime"> Full Time Positions</label>
         </div>
 
-        <div class="section-box">
-            <h3>Select Position</h3>
-            <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown()">Select positions ▼</div>
-                <div class="dropdown-content" id="positionDropdown"></div>
+        <div class="upload">
+            <p><strong>Select Position:</strong></p>
+            <div class="dropdown-container">
+                <select id="positionDropdown"></select>
             </div>
-        </div>
 
-        <div class="section-box">
-            <h3>Upload your CV</h3>
-            <div class="drag-drop-box" id="dropArea">Drag & Drop or Click to Upload</div>
-            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
+            <p><strong>Upload your CV:</strong></p>
+            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
             <button onclick="submitCV()">Submit</button>
         </div>
     </div>
 
     <script>
         const positions = {
-            internship: [
-                { name: "Software Engineering Intern", enabled: true },
-                { name: "Data Engineering Intern", enabled: true }
+            internships: [
+                { name: "Software Engineering Intern" },
+                { name: "Data Engineering Intern" }
             ],
             fulltime: [
-                { name: "Software Engineer I", enabled: true },
-                { name: "Data Engineer I", enabled: true }
+                { name: "Software Engineer I" },
+                { name: "Data Engineer I" }
             ]
         };
 
-        function updatePositions() {
+        function updateDropdown() {
             const dropdown = document.getElementById("positionDropdown");
-            dropdown.innerHTML = "";
-            
-            let selectedPositions = [];
-            if (document.getElementById("internship").checked) {
-                selectedPositions = selectedPositions.concat(positions.internship);
+            dropdown.innerHTML = '<option>Please select a category from above</option>';
+
+            if (document.getElementById("internships").checked) {
+                positions.internships.forEach(pos => addOption(dropdown, pos.name));
             }
             if (document.getElementById("fulltime").checked) {
-                selectedPositions = selectedPositions.concat(positions.fulltime);
-            }
-
-            if (selectedPositions.length === 0) {
-                dropdown.innerHTML = "<p style='padding:10px;'>Please select a category from above</p>";
-            } else {
-                selectedPositions.forEach(pos => {
-                    if (pos.enabled) {
-                        const label = document.createElement("label");
-                        label.innerHTML = `<input type="checkbox" value="${pos.name}"> ${pos.name}`;
-                        dropdown.appendChild(label);
-                    }
-                });
+                positions.fulltime.forEach(pos => addOption(dropdown, pos.name));
             }
         }
 
-        function toggleDropdown() {
-            const dropdown = document.getElementById("positionDropdown");
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        function addOption(dropdown, name) {
+            const option = document.createElement("option");
+            option.value = name;
+            option.textContent = name;
+            dropdown.appendChild(option);
         }
 
-        document.getElementById("dropArea").addEventListener("click", function() {
-            document.getElementById("cvUpload").click();
-        });
-
-        document.getElementById("cvUpload").addEventListener("change", function() {
-            document.getElementById("dropArea").innerText = "File selected: " + this.files[0].name;
-        });
+        document.getElementById("internships").addEventListener("change", updateDropdown);
+        document.getElementById("fulltime").addEventListener("change", updateDropdown);
 
         function submitCV() {
-            alert("CV Submitted!");
+            const position = document.getElementById("positionDropdown").value;
+            const fileInput = document.getElementById("cvUpload");
+            if (!fileInput.files.length) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const base64File = reader.result.split(",")[1];
+
+                fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        filename: file.name,
+                        mimeType: file.type,
+                        file: base64File
+                    })
+                })
+                .then(response => response.text())
+                .then(result => alert(result))
+                .catch(error => alert("Error uploading file: " + error));
+            };
+            reader.readAsDataURL(file);
         }
     </script>
 </body>
