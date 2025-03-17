@@ -26,7 +26,6 @@
             color: black;
             margin-top: 20px;
             text-align: left;
-            position: relative;
         }
         .checkbox-group {
             display: flex;
@@ -39,8 +38,8 @@
             gap: 5px;
         }
         .dropdown {
-            width: 100%;
             position: relative;
+            width: 100%;
         }
         .dropdown-btn {
             background: white;
@@ -57,29 +56,19 @@
         .dropdown-content {
             display: none;
             position: absolute;
-            top: 100%;
-            left: 0;
             width: 100%;
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
-            z-index: 10;
+            z-index: 1;
             text-align: left;
             padding: 5px;
-            max-height: 150px;
-            overflow-y: auto;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            white-space: normal;
         }
         .dropdown-content label {
             display: flex;
             align-items: center;
             gap: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        .dropdown-content label:hover {
-            background: #f0f0f0;
+            padding: 5px;
         }
         .drag-drop-box {
             border: 2px dashed #ccc;
@@ -91,21 +80,23 @@
             background: rgba(255, 255, 255, 0.8);
             cursor: pointer;
         }
-        .submit-btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
+        .submit-container {
+            text-align: center;
             margin-top: 15px;
+        }
+        .submit-btn {
             background: transparent;
             color: white;
             border: 2px solid white;
+            padding: 10px 20px;
             border-radius: 5px;
-            cursor: pointer;
             font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
         }
         .submit-btn:hover {
             background: white;
-            color: black;
+            color: #0077B6;
         }
     </style>
 </head>
@@ -126,9 +117,7 @@
         <div class="section-box">
             <h3>Select Position</h3>
             <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown()">
-                    <span id="dropdownText">Select a category from above ▼</span>
-                </div>
+                <div class="dropdown-btn" onclick="toggleDropdown()">Select a category from above ▼</div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
@@ -139,7 +128,9 @@
             <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
         </div>
 
-        <button class="submit-btn" onclick="submitCV()">Submit</button>
+        <div class="submit-container">
+            <button class="submit-btn" onclick="submitCV()">Submit</button>
+        </div>
     </div>
 
     <script>
@@ -172,32 +163,16 @@
                 selectedPositions.forEach(pos => {
                     if (pos.enabled) {
                         const label = document.createElement("label");
-                        label.innerHTML = `<input type="checkbox" name="position" value="${pos.name}" onchange="updateSelectedPositions()"> ${pos.name}`;
+                        label.innerHTML = `<input type="checkbox" value="${pos.name}"> ${pos.name}`;
                         dropdown.appendChild(label);
                     }
                 });
             }
-
-            updateSelectedPositions();
         }
 
         function toggleDropdown() {
             const dropdown = document.getElementById("positionDropdown");
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-        }
-
-        function updateSelectedPositions() {
-            const checkboxes = document.querySelectorAll("#positionDropdown input[type='checkbox']");
-            const selectedPositions = [];
-
-            checkboxes.forEach(checkbox => {
-                if (checkbox.checked) {
-                    selectedPositions.push(checkbox.value);
-                }
-            });
-
-            const dropdownText = document.getElementById("dropdownText");
-            dropdownText.innerText = selectedPositions.length > 0 ? selectedPositions.join(", ") : "Select a category from above ▼";
         }
 
         document.getElementById("dropArea").addEventListener("click", function() {
