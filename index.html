@@ -26,6 +26,7 @@
             color: black;
             margin-top: 20px;
             text-align: left;
+            position: relative;
         }
         .checkbox-group {
             display: flex;
@@ -38,8 +39,8 @@
             gap: 5px;
         }
         .dropdown {
-            position: relative;
             width: 100%;
+            position: relative;
         }
         .dropdown-btn {
             background: white;
@@ -56,6 +57,8 @@
         .dropdown-content {
             display: none;
             position: absolute;
+            top: 100%;
+            left: 0;
             width: 100%;
             background: white;
             border: 1px solid #ccc;
@@ -63,8 +66,8 @@
             z-index: 10;
             text-align: left;
             padding: 5px;
-            max-height: 200px; /* Prevents it from going out of frame */
-            overflow-y: auto; /* Enables scroll if needed */
+            max-height: 150px; /* Prevents dropdown overflow */
+            overflow-y: auto; /* Enables scroll */
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
         .drag-drop-box {
