@@ -31,16 +31,52 @@
             padding: 8px;
             width: 100%;
         }
-        .drag-drop-box {
+        .checkbox-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        label {
+            cursor: pointer;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            color: black;
+            width: 100%;
+            border: 1px solid #ccc;
+            z-index: 1;
+            text-align: left;
+        }
+        .dropdown-content label {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+        }
+        .dropdown-content input {
+            margin-right: 8px;
+        }
+        .dropdown button {
+            background: white;
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .drop-area {
             border: 2px dashed #0077B6;
             padding: 20px;
             margin-top: 10px;
-            text-align: center;
             cursor: pointer;
-            color: #0077B6;
-        }
-        .drag-drop-box.dragover {
-            background-color: rgba(0, 119, 182, 0.2);
+            color: white;
         }
     </style>
 </head>
@@ -48,74 +84,81 @@
     <div class="container">
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
+        <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
         
-        <div class="upload">
-            <p><strong>Select Position:</strong></p>
-            <select id="position"></select>
-
-            <p><strong>Upload your CV:</strong></p>
-            <div class="drag-drop-box" id="dragDropBox">Drag & Drop files here or click to upload</div>
-            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
-            <p id="fileName" style="margin-top: 10px; color: #0077B6;"></p>
-            
-            <button onclick="submitCV()">Submit</button>
+        <h3>Select Category</h3>
+        <div class="checkbox-group">
+            <label><input type="checkbox" id="internships" onclick="updatePositions()"> Internships</label>
+            <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full Time Positions</label>
         </div>
+
+        <h3>Select Position</h3>
+        <div class="dropdown">
+            <button onclick="toggleDropdown()">Select Positions ⌄</button>
+            <div class="dropdown-content" id="positionDropdown"></div>
+        </div>
+
+        <h3>Upload your CV</h3>
+        <div class="drop-area" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+            Drag & Drop your CV here or <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
+            <label for="cvUpload" style="cursor: pointer; color: #FFD700;">Browse</label>
+        </div>
+        <button onclick="submitCV()">Submit</button>
     </div>
 
     <script>
         const positions = [
-            { name: "Software Engineering Intern", enabled: true },
-            { name: "Data Engineering Intern", enabled: true },
-            { name: "Software Engineer I", enabled: true },
-            { name: "Data Engineer I", enabled: true },
+            { name: "Software Engineering Intern", category: "internship" },
+            { name: "Data Engineering Intern", category: "internship" },
+            { name: "Software Engineer I", category: "fulltime" },
+            { name: "Data Engineer I", category: "fulltime" },
         ];
 
-        function loadPositions() {
-            const select = document.getElementById("position");
-            select.innerHTML = "";
+        function updatePositions() {
+            const internshipChecked = document.getElementById("internships").checked;
+            const fulltimeChecked = document.getElementById("fulltime").checked;
+            const dropdown = document.getElementById("positionDropdown");
+            dropdown.innerHTML = "";
+
+            if (!internshipChecked && !fulltimeChecked) {
+                dropdown.innerHTML = "<p>Please select a category from above</p>";
+                return;
+            }
+
             positions.forEach(pos => {
-                if (pos.enabled) {
-                    const option = document.createElement("option");
-                    option.value = pos.name;
-                    option.textContent = pos.name;
-                    select.appendChild(option);
+                if ((pos.category === "internship" && internshipChecked) || (pos.category === "fulltime" && fulltimeChecked)) {
+                    const label = document.createElement("label");
+                    const input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.value = pos.name;
+                    input.name = "positions";
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(" " + pos.name));
+                    dropdown.appendChild(label);
                 }
             });
         }
 
-        const dragDropBox = document.getElementById("dragDropBox");
-        const fileInput = document.getElementById("cvUpload");
-        const fileNameDisplay = document.getElementById("fileName");
+        function toggleDropdown() {
+            const dropdown = document.getElementById("positionDropdown");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
 
-        dragDropBox.addEventListener("click", () => fileInput.click());
-
-        fileInput.addEventListener("change", (event) => {
-            if (event.target.files.length) {
-                fileNameDisplay.textContent = event.target.files[0].name;
-            }
-        });
-
-        dragDropBox.addEventListener("dragover", (event) => {
+        function handleDrop(event) {
             event.preventDefault();
-            dragDropBox.classList.add("dragover");
-        });
-
-        dragDropBox.addEventListener("dragleave", () => {
-            dragDropBox.classList.remove("dragover");
-        });
-
-        dragDropBox.addEventListener("drop", (event) => {
-            event.preventDefault();
-            dragDropBox.classList.remove("dragover");
-
-            if (event.dataTransfer.files.length) {
-                fileInput.files = event.dataTransfer.files;
-                fileNameDisplay.textContent = event.dataTransfer.files[0].name;
-            }
-        });
+            const file = event.dataTransfer.files[0];
+            document.getElementById("cvUpload").files = event.dataTransfer.files;
+            alert("File selected: " + file.name);
+        }
 
         function submitCV() {
-            const position = document.getElementById("position").value;
+            const selectedPositions = Array.from(document.querySelectorAll('input[name="positions"]:checked')).map(el => el.value);
+            if (selectedPositions.length === 0) {
+                alert("Please select at least one position.");
+                return;
+            }
+
+            const fileInput = document.getElementById("cvUpload");
             if (!fileInput.files.length) {
                 alert("Please select a file to upload.");
                 return;
@@ -132,7 +175,8 @@
                     body: new URLSearchParams({
                         filename: file.name,
                         mimeType: file.type,
-                        file: base64File
+                        file: base64File,
+                        positions: selectedPositions.join(", ")
                     })
                 })
                 .then(response => response.text())
@@ -141,8 +185,6 @@
             };
             reader.readAsDataURL(file);
         }
-
-        window.onload = loadPositions;
     </script>
 </body>
 </html>
