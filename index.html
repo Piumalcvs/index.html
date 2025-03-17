@@ -78,6 +78,7 @@
             cursor: pointer;
         }
         .dropdown-menu input {
+            margin-right: 8px;
             transform: scale(1.2);
         }
         .dropdown-menu label:hover {
@@ -135,12 +136,19 @@
 
             selectedPositions.forEach(pos => {
                 const label = document.createElement("label");
+                label.style.display = "flex";
+                label.style.alignItems = "center";
+                label.style.padding = "5px";
+                label.style.gap = "8px";
+
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.value = pos;
+                checkbox.style.marginRight = "8px";
                 checkbox.onchange = updateDropdownText;
+
                 label.appendChild(checkbox);
-                label.appendChild(document.createTextNode(" " + pos));
+                label.appendChild(document.createTextNode(pos));
                 dropdownMenu.appendChild(label);
             });
 
