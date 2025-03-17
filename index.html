@@ -60,15 +60,12 @@
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
-            z-index: 1;
+            z-index: 10;
             text-align: left;
             padding: 5px;
-        }
-        .dropdown-content label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px;
+            max-height: 200px; /* Prevents it from going out of frame */
+            overflow-y: auto; /* Enables scroll if needed */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
         .drag-drop-box {
             border: 2px dashed #ccc;
@@ -80,23 +77,21 @@
             background: rgba(255, 255, 255, 0.8);
             cursor: pointer;
         }
-        .submit-container {
-            text-align: center;
-            margin-top: 15px;
-        }
         .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
             background: transparent;
             color: white;
             border: 2px solid white;
-            padding: 10px 20px;
             border-radius: 5px;
-            font-size: 16px;
             cursor: pointer;
-            transition: 0.3s;
+            font-size: 16px;
         }
         .submit-btn:hover {
             background: white;
-            color: #0077B6;
+            color: black;
         }
     </style>
 </head>
@@ -128,9 +123,7 @@
             <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
         </div>
 
-        <div class="submit-container">
-            <button class="submit-btn" onclick="submitCV()">Submit</button>
-        </div>
+        <button class="submit-btn" onclick="submitCV()">Submit</button>
     </div>
 
     <script>
