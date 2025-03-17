@@ -57,16 +57,6 @@
             text-align: left;
             padding: 5px;
         }
-        .drag-drop-box {
-            border: 2px dashed #ccc;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            margin-top: 10px;
-            color: #333;
-            background: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
-        }
         .submit-container {
             text-align: center;
             margin-top: 15px;
@@ -137,28 +127,22 @@
             </div>
         </div>
 
+        <div class="section-box" id="positionSection" style="display: none;">
+            <h3>Select Position</h3>
+            <div class="dropdown">
+                <div class="dropdown-btn" onclick="toggleDropdown('positionDropdown')" id="positionBtn">Select Position ▼</div>
+                <div class="dropdown-content" id="positionDropdown"></div>
+            </div>
+        </div>
+
         <div class="section-box" id="startDateField" style="display: none;">
             <h3>Preferred Internship / Full-Time Position Start Date</h3>
             <input type="date" class="input-field" id="startDate">
         </div>
 
         <div class="section-box">
-            <h3>Select Position</h3>
-            <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown('positionDropdown')">Select Position ▼</div>
-                <div class="dropdown-content" id="positionDropdown"></div>
-            </div>
-        </div>
-
-        <div class="section-box">
             <h3>Additional Remarks</h3>
             <textarea class="input-field" id="remarks"></textarea>
-        </div>
-
-        <div class="section-box">
-            <h3>Upload your CV</h3>
-            <div class="drag-drop-box" id="dropArea">Drag & Drop or Click to Upload</div>
-            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
         </div>
 
         <div class="submit-container">
@@ -168,8 +152,8 @@
 
     <script>
         function toggleDropdown(id) {
-            document.getElementById(id).style.display = 
-                document.getElementById(id).style.display === "block" ? "none" : "block";
+            let dropdown = document.getElementById(id);
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         }
 
         function closeDropdowns(event) {
@@ -187,7 +171,40 @@
         function updatePositions() {
             let internshipChecked = document.getElementById("internship").checked;
             let fulltimeChecked = document.getElementById("fulltime").checked;
-            document.getElementById("startDateField").style.display = internshipChecked || fulltimeChecked ? "block" : "none";
+            let positionDropdown = document.getElementById("positionDropdown");
+            let positionSection = document.getElementById("positionSection");
+
+            positionDropdown.innerHTML = "";
+
+            if (internshipChecked || fulltimeChecked) {
+                positionSection.style.display = "block";
+                document.getElementById("positionBtn").innerText = "Select Position ▼";
+            } else {
+                positionSection.style.display = "none";
+            }
+
+            if (internshipChecked) {
+                let internshipPositions = ["Software Engineering Intern", "Data Science Intern", "HR Intern"];
+                internshipPositions.forEach(pos => {
+                    let option = document.createElement("label");
+                    option.innerHTML = `<input type="radio" name="position" value="${pos}" onclick="selectPosition('${pos}')"> ${pos}`;
+                    positionDropdown.appendChild(option);
+                });
+            }
+
+            if (fulltimeChecked) {
+                let fullTimePositions = ["Software Engineer", "Data Scientist", "HR Executive"];
+                fullTimePositions.forEach(pos => {
+                    let option = document.createElement("label");
+                    option.innerHTML = `<input type="radio" name="position" value="${pos}" onclick="selectPosition('${pos}')"> ${pos}`;
+                    positionDropdown.appendChild(option);
+                });
+            }
+        }
+
+        function selectPosition(position) {
+            document.getElementById("positionBtn").innerText = position + " ▼";
+            document.getElementById("positionDropdown").style.display = "none";
         }
     </script>
 </body>
