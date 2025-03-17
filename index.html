@@ -117,7 +117,7 @@
         <div class="section-box">
             <h3>Select Position</h3>
             <div class="dropdown">
-                <div class="dropdown-btn" id="selectedPositions" onclick="toggleDropdown()">Select a category from above ▼</div>
+                <div class="dropdown-btn" id="dropdownButton" onclick="toggleDropdown()">Select a category from above ▼</div>
                 <div class="dropdown-content" id="positionDropdown"></div>
             </div>
         </div>
@@ -147,6 +147,7 @@
 
         function updatePositions() {
             const dropdown = document.getElementById("positionDropdown");
+            const dropdownButton = document.getElementById("dropdownButton");
             dropdown.innerHTML = "";
             
             let selectedPositions = [];
@@ -159,32 +160,22 @@
 
             if (selectedPositions.length === 0) {
                 dropdown.innerHTML = "<p style='padding:10px;'>Please select a category from above</p>";
+                dropdownButton.innerHTML = "Select a category from above ▼";
             } else {
+                dropdownButton.innerHTML = "Select Position ▼";
                 selectedPositions.forEach(pos => {
                     if (pos.enabled) {
                         const label = document.createElement("label");
-                        label.innerHTML = `<input type="checkbox" value="${pos.name}" onchange="updateDropdownText()"> ${pos.name}`;
+                        label.innerHTML = `<input type="checkbox" value="${pos.name}"> ${pos.name}`;
                         dropdown.appendChild(label);
                     }
                 });
             }
-
-            // Reset dropdown text when category changes
-            document.getElementById("selectedPositions").innerText = "Select Position";
         }
 
         function toggleDropdown() {
             const dropdown = document.getElementById("positionDropdown");
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-        }
-
-        function updateDropdownText() {
-            const selectedOptions = Array.from(document.querySelectorAll('#positionDropdown input[type="checkbox"]:checked'))
-                .map(checkbox => checkbox.value);
-
-            document.getElementById("selectedPositions").innerText = selectedOptions.length > 0 
-                ? selectedOptions.join(", ") 
-                : "Select Position";
         }
 
         document.getElementById("dropArea").addEventListener("click", function() {
