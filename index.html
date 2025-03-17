@@ -26,76 +26,21 @@
             color: black;
             margin-top: 20px;
         }
-        .checkbox-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 10px;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
-        }
-        .dropdown {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            margin: auto;
-            text-align: left;
-        }
-        .dropdown button {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background: white;
-            text-align: left;
-            cursor: pointer;
-            position: relative;
-        }
-        .dropdown button::after {
-            content: "▼";
-            position: absolute;
-            right: 10px;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background: white;
-            width: 100%;
-            border: 1px solid #ccc;
-            max-height: 150px;
-            overflow-y: auto;
-            z-index: 10;
-            left: 0;
-            padding: 5px;
-        }
-        .dropdown-content label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 5px;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-        }
-        .dropdown-content input {
-            margin-right: 10px;
-        }
-        .dropdown-content div {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 5px;
-            width: 100%;
-            text-align: left;
-        }
-        .dropdown.active .dropdown-content {
-            display: block;
-        }
-        .dropdown-container {
+        select, input, button {
             margin-top: 10px;
+            padding: 8px;
+            width: 100%;
+        }
+        .drag-drop-box {
+            border: 2px dashed #0077B6;
+            padding: 20px;
+            margin-top: 10px;
+            text-align: center;
+            cursor: pointer;
+            color: #0077B6;
+        }
+        .drag-drop-box.dragover {
+            background-color: rgba(0, 119, 182, 0.2);
         }
     </style>
 </head>
@@ -103,60 +48,74 @@
     <div class="container">
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
-        <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
         
         <div class="upload">
-            <p><strong>Select Category:</strong></p>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="internships" onchange="updatePositions()"> Internships</label>
-                <label><input type="checkbox" id="fulltime" onchange="updatePositions()"> Full Time Positions</label>
-            </div>
-
-            <div class="dropdown-container">
-                <p><strong>Select Position:</strong></p>
-                <div class="dropdown">
-                    <button type="button" onclick="toggleDropdown()">Please select a category from above</button>
-                    <div class="dropdown-content">
-                        <div><input type="checkbox" value="Software Engineering Intern"><label>Software Engineering Intern</label></div>
-                        <div><input type="checkbox" value="Data Engineering Intern"><label>Data Engineering Intern</label></div>
-                        <div><input type="checkbox" value="Software Engineer I"><label>Software Engineer I</label></div>
-                        <div><input type="checkbox" value="Data Engineer I"><label>Data Engineer I</label></div>
-                    </div>
-                </div>
-            </div>
+            <p><strong>Select Position:</strong></p>
+            <select id="position"></select>
 
             <p><strong>Upload your CV:</strong></p>
-            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+            <div class="drag-drop-box" id="dragDropBox">Drag & Drop files here or click to upload</div>
+            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="display: none;">
+            <p id="fileName" style="margin-top: 10px; color: #0077B6;"></p>
+            
             <button onclick="submitCV()">Submit</button>
         </div>
     </div>
 
     <script>
-        function toggleDropdown() {
-            document.querySelector(".dropdown").classList.toggle("active");
-        }
+        const positions = [
+            { name: "Software Engineering Intern", enabled: true },
+            { name: "Data Engineering Intern", enabled: true },
+            { name: "Software Engineer I", enabled: true },
+            { name: "Data Engineer I", enabled: true },
+        ];
 
-        function updatePositions() {
-            const internshipsChecked = document.getElementById("internships").checked;
-            const fulltimeChecked = document.getElementById("fulltime").checked;
-            const dropdownButton = document.querySelector(".dropdown button");
-            const options = document.querySelectorAll(".dropdown-content div");
-
-            options.forEach(option => {
-                const text = option.textContent.trim();
-                const show = (internshipsChecked && text.includes("Intern")) || (fulltimeChecked && !text.includes("Intern"));
-                option.style.display = show ? "flex" : "none";
+        function loadPositions() {
+            const select = document.getElementById("position");
+            select.innerHTML = "";
+            positions.forEach(pos => {
+                if (pos.enabled) {
+                    const option = document.createElement("option");
+                    option.value = pos.name;
+                    option.textContent = pos.name;
+                    select.appendChild(option);
+                }
             });
-
-            if (!internshipsChecked && !fulltimeChecked) {
-                dropdownButton.textContent = "Please select a category from above";
-            } else {
-                dropdownButton.textContent = "Select Positions";
-            }
         }
+
+        const dragDropBox = document.getElementById("dragDropBox");
+        const fileInput = document.getElementById("cvUpload");
+        const fileNameDisplay = document.getElementById("fileName");
+
+        dragDropBox.addEventListener("click", () => fileInput.click());
+
+        fileInput.addEventListener("change", (event) => {
+            if (event.target.files.length) {
+                fileNameDisplay.textContent = event.target.files[0].name;
+            }
+        });
+
+        dragDropBox.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dragDropBox.classList.add("dragover");
+        });
+
+        dragDropBox.addEventListener("dragleave", () => {
+            dragDropBox.classList.remove("dragover");
+        });
+
+        dragDropBox.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dragDropBox.classList.remove("dragover");
+
+            if (event.dataTransfer.files.length) {
+                fileInput.files = event.dataTransfer.files;
+                fileNameDisplay.textContent = event.dataTransfer.files[0].name;
+            }
+        });
 
         function submitCV() {
-            const fileInput = document.getElementById("cvUpload");
+            const position = document.getElementById("position").value;
             if (!fileInput.files.length) {
                 alert("Please select a file to upload.");
                 return;
@@ -183,7 +142,7 @@
             reader.readAsDataURL(file);
         }
 
-        window.onload = updatePositions;
+        window.onload = loadPositions;
     </script>
 </body>
 </html>
