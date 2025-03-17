@@ -27,12 +27,15 @@
             margin-top: 20px;
         }
         select {
-            width: calc(100% - 20px); /* Keeps dropdown within the container */
+            width: 100%; /* Dropdown fully inside the container */
             padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
         .dropdown-container {
+            display: flex;
+            justify-content: center;
             width: 100%;
-            max-width: 100%; /* Ensures dropdown doesn't overflow */
         }
     </style>
 </head>
