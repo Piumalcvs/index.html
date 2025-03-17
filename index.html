@@ -18,6 +18,7 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
+            text-align: center;
         }
         .upload {
             background: white;
@@ -31,10 +32,14 @@
             padding: 8px;
             width: 100%;
         }
-        label {
+        .checkbox-group {
+            text-align: left;
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .checkbox-group label {
+            font-weight: normal;
             display: block;
-            margin-top: 10px;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -43,14 +48,17 @@
         <h1>Welcome to Circles</h1>
         <p>Join our dynamic team! Select a position and upload your CV below.</p>
         <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
-        
+
         <div class="upload">
-            <label><input type="checkbox" id="internshipCheckbox" onchange="updatePositions()"> Internships</label>
-            <label><input type="checkbox" id="fulltimeCheckbox" onchange="updatePositions()"> Full Time Positions</label>
+            <p><strong>Select Category:</strong></p>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="internships" onclick="filterPositions()"> Internships</label>
+                <label><input type="checkbox" id="fulltime" onclick="filterPositions()"> Full-Time Positions</label>
+            </div>
 
             <p><strong>Select Position:</strong></p>
             <select id="position">
-                <option value="" disabled selected>Please select a category above</option>
+                <option>Please select the category from above</option>
             </select>
 
             <p><strong>Upload your CV:</strong></p>
@@ -71,14 +79,17 @@
             ]
         };
 
-        function updatePositions() {
-            const internshipChecked = document.getElementById("internshipCheckbox").checked;
-            const fulltimeChecked = document.getElementById("fulltimeCheckbox").checked;
+        function filterPositions() {
+            const internshipChecked = document.getElementById("internships").checked;
+            const fulltimeChecked = document.getElementById("fulltime").checked;
             const select = document.getElementById("position");
+
             select.innerHTML = "";
 
             if (!internshipChecked && !fulltimeChecked) {
-                select.innerHTML = '<option value="" disabled selected>Please select a category above</option>';
+                const defaultOption = document.createElement("option");
+                defaultOption.textContent = "Please select the category from above";
+                select.appendChild(defaultOption);
                 return;
             }
 
@@ -133,8 +144,6 @@
             };
             reader.readAsDataURL(file);
         }
-
-        window.onload = updatePositions;
     </script>
 </body>
 </html>
