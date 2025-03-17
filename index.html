@@ -78,9 +78,18 @@
             padding: 5px;
             cursor: pointer;
             width: 100%;
+            text-align: left;
         }
         .dropdown-content input {
             margin-right: 10px;
+        }
+        .dropdown-content div {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px;
+            width: 100%;
+            text-align: left;
         }
         .dropdown.active .dropdown-content {
             display: block;
@@ -108,10 +117,10 @@
                 <div class="dropdown">
                     <button type="button" onclick="toggleDropdown()">Please select a category from above</button>
                     <div class="dropdown-content">
-                        <label><input type="checkbox" value="Software Engineering Intern"> Software Engineering Intern</label>
-                        <label><input type="checkbox" value="Data Engineering Intern"> Data Engineering Intern</label>
-                        <label><input type="checkbox" value="Software Engineer I"> Software Engineer I</label>
-                        <label><input type="checkbox" value="Data Engineer I"> Data Engineer I</label>
+                        <div><input type="checkbox" value="Software Engineering Intern"><label>Software Engineering Intern</label></div>
+                        <div><input type="checkbox" value="Data Engineering Intern"><label>Data Engineering Intern</label></div>
+                        <div><input type="checkbox" value="Software Engineer I"><label>Software Engineer I</label></div>
+                        <div><input type="checkbox" value="Data Engineer I"><label>Data Engineer I</label></div>
                     </div>
                 </div>
             </div>
@@ -131,12 +140,12 @@
             const internshipsChecked = document.getElementById("internships").checked;
             const fulltimeChecked = document.getElementById("fulltime").checked;
             const dropdownButton = document.querySelector(".dropdown button");
-            const checkboxes = document.querySelectorAll(".dropdown-content label");
+            const options = document.querySelectorAll(".dropdown-content div");
 
-            checkboxes.forEach(label => {
-                const text = label.textContent.trim();
+            options.forEach(option => {
+                const text = option.textContent.trim();
                 const show = (internshipsChecked && text.includes("Intern")) || (fulltimeChecked && !text.includes("Intern"));
-                label.style.display = show ? "flex" : "none";
+                option.style.display = show ? "flex" : "none";
             });
 
             if (!internshipsChecked && !fulltimeChecked) {
