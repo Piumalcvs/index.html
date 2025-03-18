@@ -201,7 +201,6 @@
             <textarea class="input-field" id="remarks"></textarea>
         </div>
 
-        <!-- CV Upload Section -->
         <div class="cv-upload" id="cvUpload" onclick="triggerFileInput()" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h3>Drag and Drop your CV here or Click to Browse</h3>
             <input type="file" id="cvFile" name="cvFile" accept=".pdf, .doc, .docx, .jpg, .png">
@@ -211,5 +210,19 @@
             <button class="submit-btn" onclick="submitCV()">Submit</button>
         </div>
     </div>
+
+    <script>
+        function toggleDropdown(id) {
+            let dropdown = document.getElementById(id);
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+
+        function closeDropdowns(event) {
+            if (!event.target.closest(".dropdown")) {
+                document.getElementById("graduateDropdown").style.display = "none";
+                document.getElementById("positionDropdown").style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>
