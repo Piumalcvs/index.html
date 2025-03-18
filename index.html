@@ -7,20 +7,25 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
             text-align: center;
         }
         .container {
-            max-width: 500px;
-            margin: auto;
+            max-width: 600px;
+            margin: 20px auto;
             padding: 20px;
             background: white;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
-        h2 {
+        h2, h3 {
             color: #0077b6;
+        }
+        .logo {
+            width: 150px;
+            margin-bottom: 10px;
         }
         .section-box {
             margin-bottom: 20px;
@@ -83,16 +88,20 @@
 <body>
 
     <div class="container">
-        <h2>Circles Career Fair</h2>
+        <!-- Company Logo -->
+        <img src="YOUR_LOGO_URL_HERE" alt="Circles Logo" class="logo">
 
-        <!-- Select Job Category -->
+        <h2>Welcome to Circles Career Fair</h2>
+        <p>Join our growing team! Select your preferred job category, position, and upload your CV.</p>
+
+        <!-- Job Category Selection -->
         <div class="section-box">
             <h3>Select Job Category</h3>
             <label><input type="checkbox" id="internship" onchange="updatePositions()"> Internship</label><br>
             <label><input type="checkbox" id="fulltime" onchange="updatePositions()"> Full-Time</label>
         </div>
 
-        <!-- Select Position (Fixed Missing Part) -->
+        <!-- Job Position Selection -->
         <div class="section-box" id="positionSection" style="display: none;">
             <h3>Select Position</h3>
             <div class="dropdown">
@@ -101,7 +110,7 @@
             </div>
         </div>
 
-        <!-- Start Date (Only for Interns) -->
+        <!-- Preferred Start Date (Interns Only) -->
         <div class="section-box" id="startDateField" style="display: none;">
             <h3>Preferred Start Date</h3>
             <input type="date" id="startDate">
@@ -114,7 +123,7 @@
         </div>
 
         <!-- Submit Button -->
-        <button onclick="submitForm()">Submit</button>
+        <button onclick="submitForm()">Submit Application</button>
     </div>
 
     <script>
