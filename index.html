@@ -265,7 +265,7 @@
 
             selectedPositions.forEach(pos => {
                 let option = document.createElement("label");
-                option.innerHTML = <input type="checkbox" name="position" value="${pos}" onclick="updatePositionText()"> ${pos};
+                option.innerHTML = `<input type="checkbox" name="position" value="${pos}" onclick="updatePositionText()"> ${pos}`;
                 positionDropdown.appendChild(option);
             });
         }
@@ -284,8 +284,8 @@
             event.preventDefault();
             const fileInput = document.getElementById('cvFile');
             fileInput.files = event.dataTransfer.files;
-            document.getElementById('cvUpload').innerHTML = <h3>File: ${fileInput.files[0].name}</h3>
-                <button class="remove-file-btn" onclick="removeFile()">Remove File</button>;
+            document.getElementById('cvUpload').innerHTML = `<h3>File: ${fileInput.files[0].name}</h3>
+                <button class="remove-file-btn" onclick="removeFile()">Remove File</button>`;
         }
 
         function triggerFileInput() {
@@ -294,7 +294,7 @@
 
         function removeFile() {
             document.getElementById('cvFile').value = "";
-            document.getElementById('cvUpload').innerHTML = <h3>Drag and Drop your CV here or Click to Browse</h3>;
+            document.getElementById('cvUpload').innerHTML = `<h3>Drag and Drop your CV here or Click to Browse</h3>`;
         }
 
         function submitCV() {
