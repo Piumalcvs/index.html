@@ -3,186 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circles Careers</title>
+    <title>Circles Career Fair</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #0077B6, #00A896);
-            color: white;
+            margin: 20px;
+            background-color: #f4f4f4;
             text-align: center;
-            padding: 20px;
-            margin: 0;
         }
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: auto;
-            background: rgba(255, 255, 255, 0.1);
             padding: 20px;
-            border-radius: 10px;
-            box-sizing: border-box;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            color: #0077b6;
         }
         .section-box {
-            background: linear-gradient(to right, #0077B6, #00A896);
+            margin-bottom: 20px;
             padding: 15px;
+            border: 1px solid #ddd;
             border-radius: 5px;
-            color: black;
-            margin-top: 20px;
-            text-align: left;
+            background-color: #ffffff;
         }
-        .input-field, .dropdown-btn {
+        .dropdown {
+            position: relative;
+            display: inline-block;
             width: 100%;
+        }
+        .dropdown-btn {
+            background-color: #0077b6;
+            color: white;
             padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: white;
+            width: 100%;
             text-align: left;
-            box-sizing: border-box;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
         .dropdown-content {
             display: none;
             position: absolute;
             width: 100%;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            background-color: white;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
             z-index: 1;
-            padding: 5px;
+            border-radius: 5px;
             text-align: left;
-            box-sizing: border-box;
         }
         .dropdown-content label {
             display: block;
-            padding: 5px;
+            padding: 8px;
             cursor: pointer;
         }
         .dropdown-content label:hover {
-            background: #ddd;
+            background-color: #f1f1f1;
         }
-        .checkbox-group label {
+        input[type="file"] {
             display: block;
-            padding: 5px;
-            cursor: pointer;
-            text-align: left;
+            margin: 10px auto;
         }
-        .submit-container {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .submit-btn {
-            background: transparent;
+        button {
+            background-color: #0077b6;
             color: white;
-            border: 2px solid white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .submit-btn:hover {
-            background: white;
-            color: #0077B6;
-        }
-        /* CV Upload area */
-        .cv-upload {
-            border: 2px dashed #0077B6;
-            padding: 20px;
-            margin-top: 20px;
-            cursor: pointer;
-            background: #f9f9f9;
-            color: #0077B6;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .cv-upload:hover {
-            background: #e0f7fa;
-        }
-        .cv-upload input[type="file"] {
-            display: none;
-        }
-        .remove-file-btn {
-            background-color: #ff6666;
-            color: white;
+            padding: 10px 15px;
             border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
+            width: 100%;
+            border-radius: 5px;
         }
-        .remove-file-btn:hover {
-            background-color: #ff4c4c;
-        }
-        /* Responsive design adjustments */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            .input-field, .dropdown-btn {
-                padding: 8px;
-                font-size: 14px;
-            }
-            .submit-btn {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
+        button:hover {
+            background-color: #005f8a;
         }
     </style>
 </head>
-<body onclick="closeDropdowns(event)">
+<body>
+
     <div class="container">
-        <h1>Welcome to Circles</h1>
-        <p>Join our dynamic team! Fill in the details and upload your CV below.</p>
-        <img src="https://github.com/Piumalcvs/index.html.github.io/logo" alt="Circles Logo" width="150">
+        <h2>Circles Career Fair</h2>
 
+        <!-- Select Job Category -->
         <div class="section-box">
-            <h3>Full Name</h3>
-            <input type="text" class="input-field" id="name" required>
+            <h3>Select Job Category</h3>
+            <label><input type="checkbox" id="internship" onchange="updatePositions()"> Internship</label><br>
+            <label><input type="checkbox" id="fulltime" onchange="updatePositions()"> Full-Time</label>
         </div>
 
-        <div class="section-box">
-            <h3>Email Address</h3>
-            <input type="email" class="input-field" id="email" required>
-        </div>
-
-        <div class="section-box">
-            <h3>University</h3>
-            <input type="text" class="input-field" id="university" required>
-        </div>
-
-        <div class="section-box">
-            <h3>Degree Program</h3>
-            <input type="text" class="input-field" id="degree" required>
-        </div>
-
-        <div class="section-box">
-            <h3>Are you a Graduate or Undergraduate?</h3>
-            <div class="dropdown">
-                <div class="dropdown-btn" onclick="toggleDropdown('graduateDropdown')" id="graduateBtn">Select ▼</div>
-                <div class="dropdown-content" id="graduateDropdown">
-                    <label><input type="radio" name="graduateStatus" value="Graduate" onclick="toggleFields()"> Graduate</label>
-                    <label><input type="radio" name="graduateStatus" value="Undergraduate" onclick="toggleFields()"> Undergraduate</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="section-box" id="yearField" style="display: none;">
-            <h3>Which year are you in?</h3>
-            <input type="text" class="input-field" id="year">
-        </div>
-
-        <div class="section-box" id="graduationField" style="display: none;">
-            <h3>Expected Graduation Date / Exam Completion</h3>
-            <input type="date" class="input-field" id="graduationDate">
-        </div>
-
-        <div class="section-box">
-            <h3>Select Category</h3>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
-                <label><input type="checkbox" id="fulltime" onclick="updatePositions()"> Full-Time Positions</label>
-            </div>
-        </div>
-
+        <!-- Select Position (Fixed Missing Part) -->
         <div class="section-box" id="positionSection" style="display: none;">
             <h3>Select Position</h3>
             <div class="dropdown">
@@ -191,25 +101,20 @@
             </div>
         </div>
 
+        <!-- Start Date (Only for Interns) -->
         <div class="section-box" id="startDateField" style="display: none;">
-            <h3>Preferred Internship / Full-Time Position Start Date</h3>
-            <input type="date" class="input-field" id="startDate">
+            <h3>Preferred Start Date</h3>
+            <input type="date" id="startDate">
         </div>
 
+        <!-- Upload CV -->
         <div class="section-box">
-            <h3>Additional Remarks</h3>
-            <textarea class="input-field" id="remarks"></textarea>
+            <h3>Upload Your CV</h3>
+            <input type="file" id="cvUpload" accept=".pdf,.doc,.docx">
         </div>
 
-        <!-- CV Upload Section -->
-        <div class="cv-upload" id="cvUpload" onclick="triggerFileInput()" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h3>Drag and Drop your CV here or Click to Browse</h3>
-            <input type="file" id="cvFile" name="cvFile" accept=".pdf, .doc, .docx, .jpg, .png">
-        </div>
-
-        <div class="submit-container">
-            <button class="submit-btn" onclick="submitCV()">Submit</button>
-        </div>
+        <!-- Submit Button -->
+        <button onclick="submitForm()">Submit</button>
     </div>
 
     <script>
@@ -218,12 +123,88 @@
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         }
 
-        function closeDropdowns(event) {
-            if (!event.target.closest(".dropdown")) {
-                document.getElementById("graduateDropdown").style.display = "none";
-                document.getElementById("positionDropdown").style.display = "none";
+        function updatePositions() {
+            let internshipChecked = document.getElementById("internship").checked;
+            let fulltimeChecked = document.getElementById("fulltime").checked;
+            let positionDropdown = document.getElementById("positionDropdown");
+            let positionSection = document.getElementById("positionSection");
+            let startDateField = document.getElementById("startDateField");
+
+            positionDropdown.innerHTML = "";
+
+            if (internshipChecked || fulltimeChecked) {
+                positionSection.style.display = "block";
+                startDateField.style.display = internshipChecked ? "block" : "none";
+                document.getElementById("positionBtn").innerText = "Select Position ▼";
+            } else {
+                positionSection.style.display = "none";
+                startDateField.style.display = "none";
             }
+
+            let positions = {
+                internship: ["Software Engineering Intern", "Data Engineering Intern"],
+                fulltime: ["Software Engineer I", "Data Engineer I"]
+            };
+
+            let selectedPositions = [];
+            if (internshipChecked) selectedPositions = selectedPositions.concat(positions.internship);
+            if (fulltimeChecked) selectedPositions = selectedPositions.concat(positions.fulltime);
+
+            selectedPositions.forEach(pos => {
+                let option = document.createElement("label");
+                option.innerHTML = `<input type="checkbox" name="position" value="${pos}" onclick="updatePositionText()"> ${pos}`;
+                positionDropdown.appendChild(option);
+            });
+        }
+
+        function updatePositionText() {
+            let selected = [...document.querySelectorAll('input[name="position"]:checked')].map(e => e.value);
+            document.getElementById("positionBtn").innerText = selected.length ? selected.join(", ") + " ▼" : "Select Position ▼";
+        }
+
+        function submitForm() {
+            let category = [];
+            if (document.getElementById("internship").checked) category.push("Internship");
+            if (document.getElementById("fulltime").checked) category.push("Full-Time");
+
+            let positions = [...document.querySelectorAll('input[name="position"]:checked')].map(e => e.value);
+            let startDate = document.getElementById("startDate").value;
+            let cvFile = document.getElementById("cvUpload").files[0];
+
+            if (category.length === 0) {
+                alert("Please select at least one job category.");
+                return;
+            }
+            if (positions.length === 0) {
+                alert("Please select at least one position.");
+                return;
+            }
+            if (!cvFile) {
+                alert("Please upload your CV.");
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append("category", category.join(", "));
+            formData.append("positions", positions.join(", "));
+            formData.append("startDate", startDate);
+            formData.append("cv", cvFile);
+
+            fetch("https://script.google.com/macros/s/YOUR_GOOGLE_APPS_SCRIPT_URL/exec", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("Application submitted successfully!");
+                location.reload();
+            })
+            .catch(error => {
+                alert("Error submitting application. Please try again.");
+                console.error(error);
+            });
         }
     </script>
+
 </body>
 </html>
