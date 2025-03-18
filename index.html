@@ -176,11 +176,6 @@
         </div>
 
         <div class="section-box">
-            <h3>Previous Experience</h3>
-            <input type="text" class="input-field" id="experience">
-        </div>
-
-        <div class="section-box">
             <h3>Select Category</h3>
             <div class="checkbox-group">
                 <label><input type="checkbox" id="internship" onclick="updatePositions()"> Internships</label>
@@ -216,96 +211,5 @@
             <button class="submit-btn" onclick="submitCV()">Submit</button>
         </div>
     </div>
-
-    <script>
-        function toggleDropdown(id) {
-            let dropdown = document.getElementById(id);
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-        }
-
-        function closeDropdowns(event) {
-            if (!event.target.closest(".dropdown")) {
-                document.getElementById("graduateDropdown").style.display = "none";
-                document.getElementById("positionDropdown").style.display = "none";
-            }
-        }
-
-        function toggleFields() {
-            let status = document.querySelector('input[name="graduateStatus"]:checked').value;
-            document.getElementById("yearField").style.display = status === "Undergraduate" ? "block" : "none";
-            document.getElementById("graduationField").style.display = status === "Undergraduate" ? "block" : "none";
-        }
-
-        function updatePositions() {
-            let internshipChecked = document.getElementById("internship").checked;
-            let fulltimeChecked = document.getElementById("fulltime").checked;
-            let positionDropdown = document.getElementById("positionDropdown");
-            let positionSection = document.getElementById("positionSection");
-            let startDateField = document.getElementById("startDateField");
-
-            positionDropdown.innerHTML = "";
-
-            if (internshipChecked || fulltimeChecked) {
-                positionSection.style.display = "block";
-                startDateField.style.display = "block";
-                document.getElementById("positionBtn").innerText = "Select Position ▼";
-            } else {
-                positionSection.style.display = "none";
-                startDateField.style.display = "none";
-            }
-
-            let positions = {
-                internship: ["Software Engineering Intern", "Data Engineering Intern"],
-                fulltime: ["Software Engineer I", "Data Engineer I"]
-            };
-
-            let selectedPositions = [];
-            if (internshipChecked) selectedPositions = selectedPositions.concat(positions.internship);
-            if (fulltimeChecked) selectedPositions = selectedPositions.concat(positions.fulltime);
-
-            selectedPositions.forEach(pos => {
-                let option = document.createElement("label");
-                option.innerHTML = `<input type="checkbox" name="position" value="${pos}" onclick="updatePositionText()"> ${pos}`;
-                positionDropdown.appendChild(option);
-            });
-        }
-
-        function updatePositionText() {
-            let selected = [...document.querySelectorAll('input[name="position"]:checked')].map(e => e.value);
-            document.getElementById("positionBtn").innerText = selected.length ? selected.join(", ") + " ▼" : "Select Position ▼";
-        }
-
-        // Drag and Drop functionality
-        function allowDrop(event) {
-            event.preventDefault();
-        }
-
-        function drop(event) {
-            event.preventDefault();
-            const fileInput = document.getElementById('cvFile');
-            fileInput.files = event.dataTransfer.files;
-            document.getElementById('cvUpload').innerHTML = `<h3>File: ${fileInput.files[0].name}</h3>
-                <button class="remove-file-btn" onclick="removeFile()">Remove File</button>`;
-        }
-
-        function triggerFileInput() {
-            document.getElementById('cvFile').click();
-        }
-
-        function removeFile() {
-            document.getElementById('cvFile').value = "";
-            document.getElementById('cvUpload').innerHTML = `<h3>Drag and Drop your CV here or Click to Browse</h3>`;
-        }
-
-        function submitCV() {
-            let cvFile = document.getElementById('cvFile').files[0];
-            if (cvFile) {
-                alert('CV uploaded successfully!');
-                // Handle file submission logic here (e.g., sending it to a server or Google Drive)
-            } else {
-                alert('Please upload your CV!');
-            }
-        }
-    </script>
 </body>
 </html>
