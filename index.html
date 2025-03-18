@@ -11,6 +11,7 @@
             color: white;
             text-align: center;
             padding: 20px;
+            margin: 0;
         }
         .container {
             max-width: 600px;
@@ -18,9 +19,10 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
             border-radius: 10px;
+            box-sizing: border-box;
         }
         .section-box {
-            background: white;
+            background: linear-gradient(to right, #0077B6, #00A896);
             padding: 15px;
             border-radius: 5px;
             color: black;
@@ -35,18 +37,19 @@
             border-radius: 5px;
             background: white;
             text-align: left;
-            cursor: pointer;
+            box-sizing: border-box;
         }
         .dropdown-content {
             display: none;
             position: absolute;
-            width: calc(100% - 20px);
+            width: 100%;
             background: white;
             border: 1px solid #ccc;
             border-radius: 5px;
             z-index: 1;
             padding: 5px;
             text-align: left;
+            box-sizing: border-box;
         }
         .dropdown-content label {
             display: block;
@@ -55,6 +58,12 @@
         }
         .dropdown-content label:hover {
             background: #ddd;
+        }
+        .checkbox-group label {
+            display: block;
+            padding: 5px;
+            cursor: pointer;
+            text-align: left;
         }
         .submit-container {
             text-align: center;
@@ -74,6 +83,49 @@
             background: white;
             color: #0077B6;
         }
+        /* CV Upload area */
+        .cv-upload {
+            border: 2px dashed #0077B6;
+            padding: 20px;
+            margin-top: 20px;
+            cursor: pointer;
+            background: #f9f9f9;
+            color: #0077B6;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .cv-upload:hover {
+            background: #e0f7fa;
+        }
+        .cv-upload input[type="file"] {
+            display: none;
+        }
+        .remove-file-btn {
+            background-color: #ff6666;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .remove-file-btn:hover {
+            background-color: #ff4c4c;
+        }
+        /* Responsive design adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .input-field, .dropdown-btn {
+                padding: 8px;
+                font-size: 14px;
+            }
+            .submit-btn {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+        }
     </style>
 </head>
 <body onclick="closeDropdowns(event)">
@@ -85,6 +137,11 @@
         <div class="section-box">
             <h3>Full Name</h3>
             <input type="text" class="input-field" id="name" required>
+        </div>
+
+        <div class="section-box">
+            <h3>Email Address</h3>
+            <input type="email" class="input-field" id="email" required>
         </div>
 
         <div class="section-box">
@@ -149,6 +206,12 @@
             <textarea class="input-field" id="remarks"></textarea>
         </div>
 
+        <!-- CV Upload Section -->
+        <div class="cv-upload" id="cvUpload" onclick="triggerFileInput()" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h3>Drag and Drop your CV here or Click to Browse</h3>
+            <input type="file" id="cvFile" name="cvFile" accept=".pdf, .doc, .docx, .jpg, .png">
+        </div>
+
         <div class="submit-container">
             <button class="submit-btn" onclick="submitCV()">Submit</button>
         </div>
@@ -192,8 +255,8 @@
             }
 
             let positions = {
-                internship: ["Software Engineering Intern", "Data Science Intern", "HR Intern"],
-                fulltime: ["Software Engineer", "Data Scientist", "HR Executive"]
+                internship: ["Software Engineering Intern", "Data Engineering Intern"],
+                fulltime: ["Software Engineer I", "Data Engineer I"]
             };
 
             let selectedPositions = [];
@@ -210,6 +273,38 @@
         function updatePositionText() {
             let selected = [...document.querySelectorAll('input[name="position"]:checked')].map(e => e.value);
             document.getElementById("positionBtn").innerText = selected.length ? selected.join(", ") + " ▼" : "Select Position ▼";
+        }
+
+        // Drag and Drop functionality
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('cvFile');
+            fileInput.files = event.dataTransfer.files;
+            document.getElementById('cvUpload').innerHTML = `<h3>File: ${fileInput.files[0].name}</h3>
+                <button class="remove-file-btn" onclick="removeFile()">Remove File</button>`;
+        }
+
+        function triggerFileInput() {
+            document.getElementById('cvFile').click();
+        }
+
+        function removeFile() {
+            document.getElementById('cvFile').value = "";
+            document.getElementById('cvUpload').innerHTML = `<h3>Drag and Drop your CV here or Click to Browse</h3>`;
+        }
+
+        function submitCV() {
+            let cvFile = document.getElementById('cvFile').files[0];
+            if (cvFile) {
+                alert('CV uploaded successfully!');
+                // Handle file submission logic here (e.g., sending it to a server or Google Drive)
+            } else {
+                alert('Please upload your CV!');
+            }
         }
     </script>
 </body>
